@@ -2,3 +2,7 @@
 	path = multimedia/tvheadend
 	url = ssh://git@gitlab.marcet.info:55055/javier/docker-tvheadend.git
 	branch = master
+[submodule "jitsi"]
+	path = jitsi
+	url = ssh://git@gitlab.marcet.info:55055/javier/docker-jitsi-meet.git
+	branch = master
