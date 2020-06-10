@@ -1,0 +1,35 @@
+version: '2.4'
+services:
+
+  gitlab:
+    container_name: gitlab
+    image: gitlab/gitlab-ce:latest
+    hostname: ${GITLAB_DOMAIN}
+    restart: on-failure
+    mac_address: ${MAC_GITLAB}
+    ports:
+      - '127.0.0.1:8085:80'
+      - '55055:22'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/gitlab/config:/etc/gitlab
+      - /opt/gitlab/logs:/var/log/gitlab
+      - /opt/gitlab/data:/var/opt/gitlab
+      - /opt/gitlab/uploads:/var/opt/gitlab/gitlab-rails/uploads
+      - /opt/gitlab-lfs:/var/opt/gitlab-lfs
+      - /opt/gitlab-repos:/var/opt/gitlab-repos
+    cpus: 3
+    mem_limit: 5gb
+    memswap_limit: 5gb
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_GITLAB}
+    driver_opts:
+      com.docker.network.bridge.name: br-gitlab
+
+# vim: et ci pi sts=2 sw=2 ts=2
