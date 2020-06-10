@@ -1,12 +1,12 @@
 [submodule "multimedia/tvheadend"]
 	path = multimedia/tvheadend
-	url = ssh://git@gitlab.marcet.info:55055/javier/docker-tvheadend.git
+	url = https://github.com/jmarcet/docker-tvheadend
 	branch = master
 [submodule "jitsi"]
 	path = jitsi
-	url = ssh://git@gitlab.marcet.info:55055/javier/docker-jitsi-meet.git
+	url = https://github.com/jmarcet/docker-jitsi-meet
 	branch = master
 [submodule "monitoring"]
 	path = monitoring
-	url = ssh://git@gitlab.marcet.info:55055/javier/dockprom.git
+	url = https://github.com/jmarcet/dockprom
 	branch = master
