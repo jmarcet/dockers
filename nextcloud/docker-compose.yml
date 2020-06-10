@@ -1,0 +1,118 @@
+version: '2.4'
+
+services:
+  app:
+    image: nextcloud:apache
+    stdin_open: true
+    tty: true
+    restart: on-failure
+    mac_address: ${MAC_NEXTCLOUD}
+    ports:
+      - '127.0.0.1:8086:80'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - nextcloud:/var/www/html
+      - /opt/nextcloud/custom_apps:/var/www/html/custom_apps
+      - /opt/nextcloud/config.php:/var/www/html/config/config.php
+      - /opt/nextcloud/themes:/var/www/html/themes
+      - /storage/.nextcloud:/var/www/html/data
+      - /storage/books:/storage/books:ro
+      - /storage/documentaries:/storage/documentaries:ro
+      - /storage/downloads:/storage/downloads:ro
+      - /storage/movies:/storage/movies:ro
+      - /storage/peliculas:/storage/peliculas:ro
+      - /storage/recordings:/storage/recordings:ro
+      - /storage/series:/storage/series:ro
+      - /storage/software:/storage/software:ro
+      - /storage/tvshows:/storage/tvshows:ro
+    environment:
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD}
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+    depends_on:
+      - db
+      - redis
+    cpus: 2
+    mem_limit: 2gb
+    memswap_limit: 2gb
+    healthcheck:
+      test: curl --fail -s http://127.0.0.1
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: on-failure
+    mac_address: ${MAC_NEXTCLOUD_DB}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/nextcloud/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    cpus: 1
+    mem_limit: 1gb
+    memswap_limit: 1gb
+
+  redis:
+    image: redis:alpine
+    restart: on-failure
+    mac_address: ${MAC_NEXTCLOUD_REDIS}
+    cpus: 1
+    mem_limit: 128mb
+    memswap_limit: 128mb
+    healthcheck:
+      test: wget -S http://127.0.0.1:6379 2>&1 | grep -q "wrong number of arguments for 'get' command"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  onlyoffice:
+    container_name: onlyoffice
+    image: onlyoffice/documentserver:latest
+    stdin_open: true
+    tty: true
+    restart: on-failure
+    mac_address: ${MAC_ONLYOFFICE}
+    ports:
+      - '127.0.0.1:8087:80'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - document_data:/var/www/onlyoffice/Data
+      - document_log:/var/log/onlyoffice
+    cpus: 2
+    mem_limit: 2gb
+    memswap_limit: 2gb
+    healthcheck:
+      test: wget -S http://127.0.0.1:9001 2>&1 | grep -q "HTTP/1.1 200 OK"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_NEXTCLOUD}
+    driver_opts:
+      com.docker.network.bridge.name: br-nextcloud
+
+volumes:
+  document_data:
+  document_log:
+  nextcloud:
+
+# vim: et ci pi sts=2 sw=2 ts=2
