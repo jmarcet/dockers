@@ -1,0 +1,203 @@
+version: '2.4'
+
+services:
+  comskip:
+    build: ./comskip
+    container_name: comskip
+    restart: on-failure
+    mac_address: ${MAC_COMSKIP}
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /storage/recordings:/storage/recordings
+    cpus: 4
+    mem_limit: 1gb
+    memswap_limit: 1gb
+
+  emby:
+    build: ./emby
+    container_name: emby
+    restart: on-failure
+    mac_address: ${MAC_EMBY}
+    ports:
+      - '${LAN_IP}:8096:8096'
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/emby:/config
+      - /storage/documentaries:/storage/documentaries
+      - /storage/movies:/storage/movies
+      - /storage/peliculas:/storage/peliculas
+      - /storage/recordings:/storage/recordings
+      - /storage/series:/storage/series
+      - /storage/tvshows:/storage/tvshows
+      - /www/channels.m3u:/www/channels.m3u
+      - /opt/movistartv/Logos:/www/Logos
+    environment:
+      - UID=${PUID}
+      - GID=${PGID}
+    cpus: 3
+    mem_limit: 1gb
+    memswap_limit: 1gb
+    healthcheck:
+      test: wget -S http://127.0.0.1:8096/ 2>&1 | grep -q 'HTTP/1.1 302 Found'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  medusa:
+    image: linuxserver/medusa
+    container_name: medusa
+    restart: on-failure
+    mac_address: ${MAC_MEDUSA}
+    ports:
+      - '127.0.0.1:8083:8081'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/medusa:/config
+      - /storage/downloads:/storage/downloads
+      - /storage/tvshows:/storage/tvshows
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    cpus: 1
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    healthcheck:
+      test: curl --fail -s http://127.0.0.1:8081/
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  movistartv:
+    build: ./movistartv
+    container_name: movistartv
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - SYS_ADMIN
+      - SYS_NICE
+    restart: on-failure
+    networks:
+      imagenio:
+      iptv:
+        ipv4_address: ${IPTV_ADDRESS}
+    mac_address: ${MAC_MOVISTAR1}
+    ports:
+      - '${LAN_IP}:5000:5000'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/movistartv:/home/MovistarTV.Server
+      - /storage/recordings:/home/MovistarTV.Server/Videos
+    environment:
+      - MAC_MOVISTAR2=${MAC_MOVISTAR2}
+    cpu_shares: 2048
+    cpus: 2
+    mem_limit: 512mb
+    memswap_limit: 512mb
+    healthcheck:
+      test: wget http://127.0.0.1:5000/ 2>&1 | grep -q ':5000... connected.'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  transmission:
+    build: ./transmission
+    container_name: transmission
+    cap_add:
+      - SYS_NICE
+    restart: on-failure
+    network_mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/transmission:/config
+      - /storage/downloads:/storage/downloads
+      - /storage/downloads/watch:/watch
+    environment:
+      #- TRANSMISSION_WEB_HOME=/combustion-release/
+      - TRANSMISSION_WEB_HOME=/kettu/
+      - PUID=${PUID}
+      - PGID=${PGID}
+    cpu_shares: 256
+    cpus: 2
+    mem_limit: 3gb
+    memswap_limit: 3gb
+    healthcheck:
+      test: curl --fail -s http://127.0.0.1:9091/
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  tvheadend:
+    build: ./tvheadend
+    container_name: tvheadend
+    cap_add:
+      - NET_BROADCAST
+      - SYS_ADMIN
+      - SYS_NICE
+    restart: on-failure
+    networks:
+      tvlan:
+    mac_address: ${MAC_TVHEADEND}
+    ports:
+      - '${LAN_IP}:9981:9981'
+      - '${LAN_IP}:9982:9982'
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/tvheadend:/config
+      - /storage/recordings:/recordings
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    #  - RUN_OPTS=<run options here> #optional
+    devices:
+      - /dev/dri:/dev/dri
+    cpu_shares: 2048
+    cpus: 2
+    mem_limit: 1gb
+    memswap_limit: 1gb
+    healthcheck:
+      test: wget http://127.0.0.1:9981/ 2>&1 | grep -q ':9981... connected.'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_MULTIMEDIA}
+    driver_opts:
+      com.docker.network.bridge.name: br-multimedia
+  imagenio:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_IMAGENIO}
+    driver_opts:
+      com.docker.network.bridge.name: br-imagenio
+  iptv:
+    driver: macvlan
+    driver_opts:
+      parent: eth0.2
+    ipam:
+      config:
+         - subnet: ${IPTV_NET}
+  tvlan:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_TVLAN}
+    driver_opts:
+      com.docker.network.bridge.name: br-tvlan
+
+# vim: et ci pi sts=2 sw=2 ts=2
