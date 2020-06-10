@@ -6,3 +6,7 @@
 	path = jitsi
 	url = ssh://git@gitlab.marcet.info:55055/javier/docker-jitsi-meet.git
 	branch = master
+[submodule "monitoring"]
+	path = monitoring
+	url = ssh://git@gitlab.marcet.info:55055/javier/dockprom.git
+	branch = master
