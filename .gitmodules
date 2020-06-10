@@ -1,0 +1,4 @@
+[submodule "multimedia/tvheadend"]
+	path = multimedia/tvheadend
+	url = ssh://git@gitlab.marcet.info:55055/javier/docker-tvheadend.git
+	branch = master
