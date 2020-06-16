@@ -70,7 +70,9 @@ COPY --from=buildstage /tmp/argtable-build/usr/ /usr/
 COPY --from=buildstage /tmp/comskip-build/usr/ /usr/
 COPY comskip.ini /etc/
 COPY comskip-recordings.py /usr/bin/
+COPY cleanuprecordings.sh /usr/bin/
+COPY start.sh /usr/bin/
 
 USER nobody
 
-ENTRYPOINT ["/usr/bin/comskip-recordings.py"]
+ENTRYPOINT ["/usr/bin/start.sh"]
