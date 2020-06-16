@@ -11,9 +11,11 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - LOG_COMSKIP=${LOG_COMSKIP}
+      - RECORDINGS=${RECORDINGS}
     volumes:
       - /etc/localtime:/etc/localtime
-      - /storage/recordings:/storage/recordings
+      - ${RECORDINGS}:${RECORDINGS}
     cpus: 4
     mem_limit: 1gb
     memswap_limit: 1gb

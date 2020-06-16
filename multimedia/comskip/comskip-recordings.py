@@ -6,8 +6,8 @@ from asyncio.subprocess import DEVNULL, PIPE
 from glob import glob
 
 COMSKIP_INI = '/etc/comskip.ini'
-LOGFILE = '/storage/recordings/comskip.log'
-RECORDINGS = '/storage/recordings'
+RECORDINGS = os.environ['RECORDINGS']
+LOGFILE = os.path.join(RECORDINGS, 'comskip.log')
 
 COMSKIP = 'comskip'
 INOTIFYWAIT = 'inotifywait'
