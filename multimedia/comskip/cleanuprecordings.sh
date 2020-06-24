@@ -8,7 +8,7 @@ inotifywait -m -r -e delete --format %w%f ${RECORDINGS} 2>/dev/null | while read
 	dir=$( dirname $LINE )
 	name=$( basename ${LINE/.mpeg} )
 	echo "`date` '$LINE' has been deleted in '$dir'"
-	find $dir/ -type f -name "${name}*" -delete
+	find $dir/ -type f -name "${name}*" -delete 2>/dev/null
 	if [ -d "$dir" -a "$dir" != "${RECORDINGS}" ]; then
 		[ -n "$( find $dir/ -type f -name '*.mpeg' )" ] && \
 			echo "`date` '$dir' is not empty" && \
