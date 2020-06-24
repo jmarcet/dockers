@@ -17,8 +17,8 @@ services:
       - /etc/localtime:/etc/localtime
       - ${RECORDINGS}:${RECORDINGS}
     cpus: 4
-    mem_limit: 1gb
-    memswap_limit: 1gb
+    mem_limit: 2gb
+    memswap_limit: 2gb
 
   emby:
     build: ./emby
@@ -44,8 +44,8 @@ services:
       - UID=${PUID}
       - GID=${PGID}
     cpus: 3
-    mem_limit: 1gb
-    memswap_limit: 1gb
+    mem_limit: 2gb
+    memswap_limit: 2gb
     healthcheck:
       test: wget -S http://127.0.0.1:8096/ 2>&1 | grep -q 'HTTP/1.1 302 Found'
       interval: 30s
@@ -98,7 +98,7 @@ services:
       - /storage/recordings:/home/MovistarTV.Server/Videos
     environment:
       - MAC_MOVISTAR2=${MAC_MOVISTAR2}
-    cpu_shares: 2048
+    cpu_shares: 4096
     cpus: 2
     mem_limit: 512mb
     memswap_limit: 512mb
@@ -125,7 +125,6 @@ services:
       - TRANSMISSION_WEB_HOME=/kettu/
       - PUID=${PUID}
       - PGID=${PGID}
-    cpu_shares: 256
     cpus: 2
     mem_limit: 3gb
     memswap_limit: 3gb
