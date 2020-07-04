@@ -19,8 +19,8 @@ services:
       - /opt/gitlab-lfs:/var/opt/gitlab-lfs
       - /opt/gitlab-repos:/var/opt/gitlab-repos
     cpus: 3
-    mem_limit: 5gb
-    memswap_limit: 5gb
+    mem_limit: 3gb
+    memswap_limit: 3gb
 
 networks:
   default:
