@@ -1,0 +1,58 @@
+version: '2.4'
+
+services:
+  db:
+    image: mysql/mysql-server:5.7
+    hostname: db
+    restart: on-failure
+    mac_address: ${MAC_ZM_DB}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/zoneminder/mysql:/var/lib/mysql
+      - ./conf/mysql:/etc/mysql:ro
+    environment:
+     - MYSQL_USER=zmuser
+     - MYSQL_PASSWORD=${ZM_DB_PASS}
+     - MYSQL_DATABASE=zm
+     - MYSQL_ROOT_HOST=%
+    cpus: 1
+    mem_limit: 512mb
+    memswap_limit: 512mb
+
+  zoneminder:
+    image: quantumobject/docker-zoneminder
+    container_name: zoneminder
+    restart: on-failure
+    mac_address: ${MAC_ZM_WEB}
+    ports:
+      - "127.0.0.1:8090:80"
+    volumes:
+      - /opt/zoneminder/log:/var/log/zm
+      - /opt/zoneminder/etc:/etc/zm
+      - /opt/zoneminder/config:/config
+      - /storage/zoneminder:/var/cache/zoneminder
+      - type: tmpfs
+        target: /dev/shm
+    environment:
+     - ZM_DB_HOST=db
+     - ZM_DB_NAME=zm
+     - ZM_DB_USER=zmuser
+     - ZM_DB_PASS=${ZM_DB_PASS}
+     # - VIRTUAL_HOST=zm.localhost, stream0.localhost
+     # - SERVICE_PORTS="8081"
+     # - ZM_SERVER_HOST=node.0
+    depends_on:
+      - db
+    cpus: 4
+    mem_limit: 2gb
+    memswap_limit: 2gb
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_ZONEMINDER}
+    driver_opts:
+      com.docker.network.bridge.name: br-zoneminder
