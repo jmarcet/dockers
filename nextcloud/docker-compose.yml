@@ -40,6 +40,7 @@ services:
       - db
       - redis
     cpus: 2
+    cpuset: 2,6,3,7
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
@@ -62,6 +63,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     cpus: 1
+    cpuset: 2,6,3,7
     mem_limit: 1gb
     memswap_limit: 1gb
 
@@ -70,6 +72,7 @@ services:
     restart: on-failure
     mac_address: ${MAC_NEXTCLOUD_REDIS}
     cpus: 1
+    cpuset: 2,6,3,7
     mem_limit: 128mb
     memswap_limit: 128mb
     healthcheck:
@@ -92,6 +95,7 @@ services:
       - document_data:/var/www/onlyoffice/Data
       - document_log:/var/log/onlyoffice
     cpus: 2
+    cpuset: 2,6,3,7
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
