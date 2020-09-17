@@ -16,6 +16,7 @@ services:
      - MYSQL_DATABASE=zm
      - MYSQL_ROOT_HOST=%
     cpus: 1
+    cpuset: 2,6,3
     mem_limit: 512mb
     memswap_limit: 512mb
 
@@ -43,7 +44,8 @@ services:
      # - ZM_SERVER_HOST=node.0
     depends_on:
       - db
-    cpus: 4
+    cpus: 3
+    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
 

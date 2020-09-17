@@ -17,8 +17,8 @@ services:
       - /etc/localtime:/etc/localtime
       - ${RECORDINGS}:${RECORDINGS}
     cpu_shares: 64
-    cpus: 4
-    cpuset: 2,6,3,7
+    cpus: 3
+    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
 
@@ -47,7 +47,7 @@ services:
       - GID=${PGID}
     cpu_shares: 1024
     cpus: 3
-    cpuset: 2,6,3,7
+    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
@@ -73,7 +73,7 @@ services:
       - PGID=${PGID}
     cpu_shares: 512
     cpus: 1
-    cpuset: 2,6,3,7
+    cpuset: 2,6,3
     mem_limit: 512mb
     memswap_limit: 512mb
     healthcheck:
@@ -138,7 +138,7 @@ services:
       - PGID=${PGID}
     cpu_shares: 128
     cpus: 2
-    cpuset: 2,6,3,7
+    cpuset: 2,6,3
     mem_limit: 3gb
     memswap_limit: 3gb
     healthcheck:
