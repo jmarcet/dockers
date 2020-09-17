@@ -36,6 +36,7 @@ services:
       - /opt/emby:/config
       - /storage/documentaries:/storage/documentaries
       - /storage/movies:/storage/movies
+      - /storage/osirispelis:/storage/osirispelis
       - /storage/peliculas:/storage/peliculas
       - /storage/recordings:/storage/recordings
       - /storage/series:/storage/series
