@@ -7,7 +7,7 @@ services:
     restart: on-failure
     mac_address: ${MAC_URBACKUP}
     ports:
-      - '${LAN_IP}:55413:55413'
+      #- '${LAN_IP}:55413:55413'
       - '127.0.0.1:55414:55414'
       #- '${LAN_IP}:55415:55415'
       - '${LAN_IP}:35623:35623/udp'
