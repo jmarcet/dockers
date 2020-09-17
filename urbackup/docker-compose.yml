@@ -20,8 +20,8 @@ services:
     cap_add:
       - SYS_ADMIN
     cpu_shares: 1024
-    cpus: 4
-    cpuset: 2,6,3,7
+    cpus: 3
+    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
 
