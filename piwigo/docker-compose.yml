@@ -1,0 +1,56 @@
+version: '2.4'
+
+services:
+  piwigo:
+    image: linuxserver/piwigo
+    container_name: piwigo
+    restart: on-failure
+    mac_address: ${MAC_PIWIGO}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=Europe/Madrid
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/piwigo:/config
+    ports:
+      - '127.0.0.1:8060:80'
+    cpu_shares: 512
+    cpus: 3
+    cpuset: 2,6,3
+    mem_limit: 2gb
+    memswap_limit: 2gb
+    #healthcheck:
+    #  test: curl --fail -s http://127.0.0.1:8081/
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
+
+  mysql:
+    image: mysql:8.0.18
+    container_name: piwigo_mysql
+    restart: on-failure
+    mac_address: ${MAC_PIWIGO_MYSQL}
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    environment:
+      MYSQL_USER: "piwigo"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "piwigo"
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    cpu_shares: 512
+    cpus: 1
+    cpuset: 2,6,3
+    mem_limit: 1gb
+    memswap_limit: 1gb
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_PIWIGO}
+    driver_opts:
+      com.docker.network.bridge.name: br-piwigo
+
+# vim: et ci pi sts=2 sw=2 ts=2
