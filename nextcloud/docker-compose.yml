@@ -32,6 +32,7 @@ services:
       - MYSQL_USER=nextcloud
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD}
       - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN_USER}
       - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_ADMIN_PASSWORD}
       - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
@@ -75,6 +76,7 @@ services:
     cpuset: 2,6,3
     mem_limit: 128mb
     memswap_limit: 128mb
+    command: redis-server --requirepass ${REDIS_HOST_PASSWORD}
     healthcheck:
       test: wget -S http://127.0.0.1:6379 2>&1 | grep -q "wrong number of arguments for 'get' command"
       interval: 30s
