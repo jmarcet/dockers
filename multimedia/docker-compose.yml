@@ -79,9 +79,9 @@ services:
       timeout: 5s
       retries: 3
 
-  movistartv:
-    build: ./movistartv
-    container_name: movistartv
+  movistar_u7d:
+    build: ./movistar_u7d
+    container_name: movistar_u7d
     cap_add:
       - NET_ADMIN
       - NET_BROADCAST
@@ -89,28 +89,71 @@ services:
       - SYS_NICE
     restart: on-failure
     networks:
-      imagenio:
+      tvlan:
+        ipv4_address: ${U7D_ADDRESS}
       iptv:
         ipv4_address: ${IPTV_ADDRESS}
-    mac_address: ${MAC_MOVISTAR1}
-    ports:
-      - '${LAN_IP}:5000:5000'
+    #mac_address: ${MAC_MOVISTAR_U7D}
+    #ports:
+    #  - '8888:8888'
     volumes:
       - /etc/localtime:/etc/localtime
-      - /opt/movistartv:/home/MovistarTV.Server
-      - /storage/recordings:/home/MovistarTV.Server/Videos
+      - ./movistar_u7d:/app
+      - ${U7D_HOME}:/home
+      - ${U7D_DIR}:${U7D_DIR}
     environment:
-      - MAC_MOVISTAR2=${MAC_MOVISTAR2}
-    cpu_shares: 4096
+      - IPTV_GW=${IPTV_GW}
+      - MAC_IPTV_U7D=${MAC_IPTV_U7D}
+      - MAC_MOVISTAR_U7D=${MAC_MOVISTAR_U7D}
+      - SANIC_HOST=${SANIC_HOST}
+      - SANIC_PORT=${SANIC_PORT}
+      - U7D_GW=${U7D_GW}
+      - U7D_DIR=${U7D_DIR}
+      - UDPXY=${UDPXY}
+      - UDPXY_VOD=${UDPXY_VOD}
+    devices:
+      - /dev/dri:/dev/dri
+    cpu_shares: 2048
     cpus: 2
-    cpuset: 4,0
-    mem_limit: 512mb
-    memswap_limit: 512mb
+    mem_limit: 1gb
+    memswap_limit: 1gb
     healthcheck:
-      test: wget http://127.0.0.1:5000/ 2>&1 | grep -q ':5000... connected.'
+      test: ping -c 1 -W 1 www-60.svc.imagenio.telefonica.net | grep -q '172.26.22.23' && nc -vz ${SANIC_HOST} 8888
       interval: 30s
       timeout: 5s
       retries: 3
+
+  #movistartv:
+  #  build: ./movistartv
+  #  container_name: movistartv
+  #  cap_add:
+  #    - NET_ADMIN
+  #    - NET_BROADCAST
+  #    - SYS_ADMIN
+  #    - SYS_NICE
+  #  restart: on-failure
+  #  networks:
+  #    imagenio:
+  #    iptv:
+  #      ipv4_address: ${IPTV_ADDRESS}
+  #  mac_address: ${MAC_MOVISTAR1}
+  #  ports:
+  #    - '${LAN_IP}:5000:5000'
+  #  volumes:
+  #    - /etc/localtime:/etc/localtime
+  #    - /opt/movistartv:/home/MovistarTV.Server
+  #    - /storage/recordings:/home/MovistarTV.Server/Videos
+  #  environment:
+  #    - MAC_MOVISTAR2=${MAC_MOVISTAR2}
+  #  cpu_shares: 4096
+  #  cpus: 2
+  #  mem_limit: 512mb
+  #  memswap_limit: 512mb
+  #  healthcheck:
+  #    test: wget http://127.0.0.1:5000/ 2>&1 | grep -q ':5000... connected.'
+  #    interval: 30s
+  #    timeout: 5s
+  #    retries: 3
 
   transmission:
     build: ./transmission
@@ -187,14 +230,14 @@ networks:
         - subnet: ${SUBNET_MULTIMEDIA}
     driver_opts:
       com.docker.network.bridge.name: br-multimedia
-  imagenio:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET_IMAGENIO}
-    driver_opts:
-      com.docker.network.bridge.name: br-imagenio
+  #imagenio:
+  #  driver: bridge
+  #  ipam:
+  #    driver: default
+  #    config:
+  #      - subnet: ${SUBNET_IMAGENIO}
+  #  driver_opts:
+  #    com.docker.network.bridge.name: br-imagenio
   iptv:
     driver: macvlan
     driver_opts:

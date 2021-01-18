@@ -1,10 +1,10 @@
 <settings version="2">
     <setting id="ActivarDLNA">false</setting>
-    <setting id="BUFSIZE">65535</setting>
+    <setting id="BUFSIZE">65536</setting>
     <setting id="CanalesAutomatico">true</setting>
     <setting id="CargarCanalesHD">true</setting>
     <setting id="DiferenciaHoraria">1</setting>
-    <setting id="DireccionBase">true</setting>
+    <setting id="DireccionBase">false</setting>
     <setting id="ModoDebug">true</setting>
     <setting id="MulticastAllInterface">true</setting>
     <setting id="OcultarRecordingseries">false</setting>
@@ -18,16 +18,16 @@
     <setting id="TiposdeBusqueda">0</setting>
     <setting id="TranscodificarDLNA">false</setting>
     <setting id="UsarDNSMovistar">true</setting>
-    <setting id="ZonaGeografica">1</setting>
+    <setting id="ZonaGeografica">0</setting>
     <setting id="actualizarBibliotecasenarranque">false</setting>
-    <setting id="canalesgrabacion">0</setting>
+    <setting id="canalesgrabacion">1</setting>
     <setting id="colorresaltadoEPG">blue</setting>
     <setting id="detalleepg">true</setting>
-    <setting id="diasantiguedad">1</setting>
+    <setting id="diasantiguedad">7</setting>
     <setting id="eliminargrabacioncloud">true</setting>
     <setting id="finalventana">24</setting>
     <setting id="inicioventana">0</setting>
-    <setting id="lentimeshiftfile">0</setting>
+    <setting id="lentimeshiftfile">8192</setting>
     <setting id="minutosantes">5</setting>
     <setting id="minutosdespues">5</setting>
     <setting id="nconcurrentes">10</setting>
@@ -36,7 +36,7 @@
     <setting id="refrescarlogosalreiciar">true</setting>
     <setting id="registroshistorial">50</setting>
     <setting id="servidorInicio">239.0.2.129</setting>
-    <setting id="sincronizar">true</setting>
+    <setting id="sincronizar">false</setting>
     <setting id="sincronizarBibliotecaNube">true</setting>
     <setting id="sincronizartvshow">true</setting>
 </settings>
