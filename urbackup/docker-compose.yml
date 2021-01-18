@@ -15,13 +15,13 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /opt/urbackup:/var/urbackup
       - /storage/backups/urbackup:/backups
     cap_add:
       - SYS_ADMIN
     cpu_shares: 1024
     cpus: 3
-    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
 
