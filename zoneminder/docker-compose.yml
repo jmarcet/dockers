@@ -7,7 +7,7 @@ services:
     restart: on-failure
     mac_address: ${MAC_ZM_DB}
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - /opt/zoneminder/mysql:/var/lib/mysql
       - ./conf/mysql:/etc/mysql:ro
     environment:
@@ -16,7 +16,6 @@ services:
      - MYSQL_DATABASE=zm
      - MYSQL_ROOT_HOST=%
     cpus: 1
-    cpuset: 2,6,3
     mem_limit: 512mb
     memswap_limit: 512mb
 
@@ -28,6 +27,7 @@ services:
     ports:
       - "127.0.0.1:8090:80"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /opt/zoneminder/log:/var/log/zm
       - /opt/zoneminder/etc:/etc/zm
       - /opt/zoneminder/config:/config
@@ -45,7 +45,6 @@ services:
     depends_on:
       - db
     cpus: 3
-    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
 
