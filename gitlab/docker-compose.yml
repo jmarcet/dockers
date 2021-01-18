@@ -11,7 +11,7 @@ services:
       - '127.0.0.1:8085:80'
       - '55055:22'
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - /opt/gitlab/config:/etc/gitlab
       - /opt/gitlab/logs:/var/log/gitlab
       - /opt/gitlab/data:/var/opt/gitlab
