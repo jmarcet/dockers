@@ -10,7 +10,7 @@ services:
     ports:
       - '127.0.0.1:8086:80'
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - nextcloud:/var/www/html
       - /opt/nextcloud/custom_apps:/var/www/html/custom_apps
       - /opt/nextcloud/config.php:/var/www/html/config/config.php
@@ -41,7 +41,6 @@ services:
       - db
       - redis
     cpus: 2
-    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
@@ -56,7 +55,7 @@ services:
     restart: on-failure
     mac_address: ${MAC_NEXTCLOUD_DB}
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - /opt/nextcloud/db:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=nextcloud
@@ -64,7 +63,6 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     cpus: 1
-    cpuset: 2,6,3
     mem_limit: 1gb
     memswap_limit: 1gb
 
@@ -73,7 +71,6 @@ services:
     restart: on-failure
     mac_address: ${MAC_NEXTCLOUD_REDIS}
     cpus: 1
-    cpuset: 2,6,3
     mem_limit: 128mb
     memswap_limit: 128mb
     command: redis-server --requirepass ${REDIS_HOST_PASSWORD}
@@ -93,11 +90,10 @@ services:
     ports:
       - '127.0.0.1:8087:80'
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - document_data:/var/www/onlyoffice/Data
       - document_log:/var/log/onlyoffice
     cpus: 2
-    cpuset: 2,6,3
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
