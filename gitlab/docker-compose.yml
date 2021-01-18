@@ -1,8 +1,8 @@
 version: '2.4'
 services:
 
-  gitlab:
-    container_name: gitlab
+  gitlab-ce:
+    container_name: gitlab-ce
     image: gitlab/gitlab-ce:latest
     hostname: ${GITLAB_DOMAIN}
     restart: on-failure
