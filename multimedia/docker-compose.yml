@@ -177,35 +177,6 @@ services:
       timeout: 5s
       retries: 3
 
-  xteve:
-    image: alturismo/xteve
-    container_name: xteve
-    cap_add:
-      - NET_BROADCAST
-      - SYS_ADMIN
-      - SYS_NICE
-    restart: on-failure
-    mac_address: ${MAC_XTEVE}
-    ports:
-      - '${LAN_IP}:34400:34400'
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /opt/xteve/_config:/config:rw
-      - /opt/xteve:/root/.xteve:rw
-      - /tmp/xteve:/tmp/xteve:rw
-      - /storage/recordings:/recordings:rw
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ='Europe/Madrid'
-    #  - RUN_OPTS=<run options here> #optional
-    devices:
-      - /dev/dri:/dev/dri
-    cpu_shares: 2048
-    cpus: 2
-    cpuset: 4,0
-    mem_limit: 1gb
-    memswap_limit: 1gb
 
 networks:
   default:
