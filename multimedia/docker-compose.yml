@@ -25,9 +25,7 @@ services:
     build: ./emby
     container_name: emby
     restart: on-failure
-    mac_address: ${MAC_EMBY}
-    ports:
-      - '${LAN_IP}:8096:8096'
+    network_mode: host
     devices:
       - /dev/dri:/dev/dri
     volumes:
