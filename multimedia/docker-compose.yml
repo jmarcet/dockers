@@ -183,39 +183,39 @@ services:
       timeout: 60s
       retries: 3
 
-  tvheadend:
-    build: ./tvheadend
-    container_name: tvheadend
-    cap_add:
-      - NET_BROADCAST
-      - SYS_ADMIN
-      - SYS_NICE
-    restart: on-failure
-    networks:
-      tvlan:
-    mac_address: ${MAC_TVHEADEND}
-    ports:
-      - '${LAN_IP}:9981:9981'
-      - '${LAN_IP}:9982:9982'
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - /opt/tvheadend:/config
-      - /storage/recordings:/recordings
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-    #  - RUN_OPTS=<run options here> #optional
-    devices:
-      - /dev/dri:/dev/dri
-    cpu_shares: 2048
-    cpus: 2
-    mem_limit: 1gb
-    memswap_limit: 1gb
-    healthcheck:
-      test: wget http://127.0.0.1:9981/ 2>&1 | grep -q ':9981... connected.'
-      interval: 30s
-      timeout: 5s
-      retries: 3
+  #tvheadend:
+  #  build: ./tvheadend
+  #  container_name: tvheadend
+  #  cap_add:
+  #    - NET_BROADCAST
+  #    - SYS_ADMIN
+  #    - SYS_NICE
+  #  restart: on-failure
+  #  networks:
+  #    tvlan:
+  #  mac_address: ${MAC_TVHEADEND}
+  #  ports:
+  #    - '${LAN_IP}:9981:9981'
+  #    - '${LAN_IP}:9982:9982'
+  #  volumes:
+  #    - /etc/localtime:/etc/localtime
+  #    - /opt/tvheadend:/config
+  #    - /storage/recordings:/recordings
+  #  environment:
+  #    - PUID=${PUID}
+  #    - PGID=${PGID}
+  #  #  - RUN_OPTS=<run options here> #optional
+  #  devices:
+  #    - /dev/dri:/dev/dri
+  #  cpu_shares: 2048
+  #  cpus: 2
+  #  mem_limit: 1gb
+  #  memswap_limit: 1gb
+  #  healthcheck:
+  #    test: wget http://127.0.0.1:9981/ 2>&1 | grep -q ':9981... connected.'
+  #    interval: 30s
+  #    timeout: 5s
+  #    retries: 3
 
 
 networks:
