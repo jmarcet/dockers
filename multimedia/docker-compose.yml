@@ -1,25 +1,25 @@
 version: '2.4'
 
 services:
-  comskip:
-    build: ./comskip
-    container_name: comskip
-    restart: on-failure
-    mac_address: ${MAC_COMSKIP}
-    devices:
-      - /dev/dri:/dev/dri
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - LOG_COMSKIP=${LOG_COMSKIP}
-      - RECORDINGS=${RECORDINGS}
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ${RECORDINGS}:${RECORDINGS}
-    cpu_shares: 64
-    cpus: 3
-    mem_limit: 2gb
-    memswap_limit: 2gb
+  #comskip:
+  #  build: ./comskip
+  #  container_name: comskip
+  #  restart: on-failure
+  #  mac_address: ${MAC_COMSKIP}
+  #  devices:
+  #    - /dev/dri:/dev/dri
+  #  environment:
+  #    - PUID=${PUID}
+  #    - PGID=${PGID}
+  #    - LOG_COMSKIP=${LOG_COMSKIP}
+  #    - RECORDINGS=${RECORDINGS}
+  #  volumes:
+  #    - /etc/localtime:/etc/localtime
+  #    - ${RECORDINGS}:${RECORDINGS}
+  #  cpu_shares: 64
+  #  cpus: 3
+  #  mem_limit: 2gb
+  #  memswap_limit: 2gb
 
   emby:
     build: ./emby
