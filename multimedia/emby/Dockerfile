@@ -1,5 +1,7 @@
-FROM emby/embyserver:latest
-RUN ln -s /system/EmbyServer /usr/bin/EmbyServer && \
-    sed -e 's:system/EmbyServer:EmbyServer:' -e 's:/bin/ffdetect:ffdetect:' \
-        -e 's:/bin/ffmpeg:ffmpeg:' -e 's:/bin/ffprobe:ffprobe:' \
-	-i /etc/services.d/emby-server/run
+FROM ghcr.io/linuxserver/emby
+COPY ffmpeg.sh /usr/bin
+RUN ln -s /app/emby/EmbyServer /usr/bin/EmbyServer && \
+    sed -e 's:\/app\/emby\/::g' -e 's:ffmpeg ffmpeg :ffmpeg ffmpeg.sh :' -i /etc/services.d/emby/run
+
+RUN apt-get update && apt-get -y install i965-va-driver ffmpeg
+RUN apt-get -y clean && apt-get -y autoremove
