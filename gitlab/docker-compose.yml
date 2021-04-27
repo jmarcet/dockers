@@ -37,6 +37,31 @@ services:
   #  mem_limit: 6gb
   #  memswap_limit: 6gb
 
+  code-server:
+    container_name: code-server
+    # image: ghcr.io/linuxserver/code-server
+    build: ./code-server
+    restart: on-failure
+    mac_address: ${MAC_CODESERVER}
+    ports:
+      - '127.0.0.1:8095:8443'
+    environment:
+      - PUID=${CODESERVER_UID}
+      - PGID=${CODESERVER_GID}
+      - PROXY_DOMAIN=${CODESERVER_DOMAIN}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/code-server:/config
+      - /opt/docker:/var/lib/docker
+      - /var/run/docker:/var/run/docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CODESERVER_HOME_DATA}:/src
+      - ${CODESERVER_SHARED_DATA}:${CODESERVER_SHARED_DATA}
+    cpus: 3
+    mem_limit: 6gb
+    memswap_limit: 6gb
+
+
 networks:
   default:
     driver: bridge
