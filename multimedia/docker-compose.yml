@@ -22,7 +22,8 @@ services:
   #  memswap_limit: 2gb
 
   emby:
-    build: ./emby
+    image: ghcr.io/linuxserver/emby
+    #build: ./emby
     container_name: emby
     restart: on-failure
     network_mode: host
