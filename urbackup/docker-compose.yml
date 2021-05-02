@@ -4,7 +4,7 @@ services:
   urbackup:
     image: uroni/urbackup-server:latest
     container_name: urbackup
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_URBACKUP}
     ports:
       #- '${LAN_IP}:55413:55413'
