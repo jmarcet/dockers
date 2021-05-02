@@ -5,7 +5,7 @@ services:
     container_name: gitlab-ce
     image: gitlab/gitlab-ce:latest
     hostname: ${GITLAB_DOMAIN}
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_GITLAB}
     ports:
       - '127.0.0.1:8085:80'
@@ -41,7 +41,7 @@ services:
     container_name: code-server
     # image: ghcr.io/linuxserver/code-server
     build: ./code-server
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_CODESERVER}
     ports:
       - '127.0.0.1:8095:8443'
