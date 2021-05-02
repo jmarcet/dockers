@@ -3,8 +3,9 @@ version: '2.4'
 services:
   db:
     image: mysql/mysql-server:5.7
+    container_name: zoneminder_db
     hostname: db
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_ZM_DB}
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -22,7 +23,7 @@ services:
   zoneminder:
     image: quantumobject/docker-zoneminder
     container_name: zoneminder
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_ZM_WEB}
     ports:
       - "127.0.0.1:8090:80"
