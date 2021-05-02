@@ -12,10 +12,11 @@ services:
   #    - PUID=${PUID}
   #    - PGID=${PGID}
   #    - LOG_COMSKIP=${LOG_COMSKIP}
-  #    - RECORDINGS=${RECORDINGS}
+  #    - RECORDINGS=${U7D_DIR}
   #  volumes:
   #    - /etc/localtime:/etc/localtime
-  #    - ${RECORDINGS}:${RECORDINGS}
+  #    - ./comskip:/app
+  #    - ${U7D_DIR}:${U7D_DIR}
   #  cpu_shares: 64
   #  cpus: 3
   #  mem_limit: 2gb
