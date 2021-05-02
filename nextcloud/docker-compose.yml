@@ -1,11 +1,12 @@
 version: '2.4'
 
 services:
-  app:
+  app-server:
     image: nextcloud:apache
+    container_name: nextcloud_app
     stdin_open: true
     tty: true
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD}
     ports:
       - '127.0.0.1:8086:80'
@@ -51,9 +52,12 @@ services:
 
   db:
     image: mariadb
+    container_name: nextcloud_db
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_DB}
+    ports:
+      - '${LAN_IP}:3306:3306'
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/nextcloud/db:/var/lib/mysql
@@ -68,7 +72,8 @@ services:
 
   redis:
     image: redis:alpine
-    restart: on-failure
+    container_name: nextcloud_redis
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_REDIS}
     cpus: 1
     mem_limit: 128mb
@@ -85,7 +90,7 @@ services:
     image: onlyoffice/documentserver:latest
     stdin_open: true
     tty: true
-    restart: on-failure
+    restart: ${RESTART_POLICY}
     mac_address: ${MAC_ONLYOFFICE}
     ports:
       - '127.0.0.1:8087:80'
