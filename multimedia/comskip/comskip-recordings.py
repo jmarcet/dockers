@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.8 -u
+#!/usr/local/bin/python3
 
 import asyncio
 import os
@@ -23,14 +23,14 @@ def log(text):
 
 
 def cleanup(filename, _check=True):
-    [os.remove(x) for x in glob(filename + b'.*') if not x.endswith(b'.txt') and not x.endswith(b'.mpeg')]
+    [os.remove(x) for x in glob(filename + b'.*') if not x.endswith(b'.txt') and not x.endswith(b'.mp4')]
     if _check and (not os.path.exists(filename + b'.txt') or not os.path.getsize(filename + b'.txt')):
-        if os.path.exists(filename + b'.mpeg'):
-            log(f'[WARNING]: something went wrong analyzing {filename}.mpeg, marking as already processed')
+        if os.path.exists(filename + b'.mp4'):
+            log(f'[WARNING]: something went wrong analyzing {filename}.mp4, marking as already processed')
             with open(filename + b'.txt', 'w') as f:
                 f.write(f'[WARNING]: something went wrong analyzing this video\n')
         else:
-            log(f'[WARNING]: something went wrong analyzing {filename}.mpeg')
+            log(f'[WARNING]: something went wrong analyzing {filename}.mp4')
 
 
 async def run(*args, _filename=None):
@@ -48,7 +48,7 @@ async def main():
     while True:
         recording = (await proc.stdout.readline()).rstrip()
 
-        if recording.endswith(b'.mpeg') or recording.endswith(b'.mpeg-merged'):
+        if recording.endswith(b'.mp4') or recording.endswith(b'.mp4-merged'):
             filename = os.path.splitext(recording)[0]
         elif recording.endswith(b'.mkvtoolnix.chapters'):
             filename = recording.rpartition(b'.mkvtoolnix.chapters')[0]
@@ -57,7 +57,7 @@ async def main():
                 log(recording)
             continue
 
-        if recording.endswith(b'.mpeg'):
+        if recording.endswith(b'.mp4'):
             if not os.path.exists(recording) or not os.path.isfile(recording):
                 log(f'[ERROR] unable to find {recording}')
                 continue
@@ -71,8 +71,8 @@ async def main():
 
         elif recording.endswith(b'.mkvtoolnix.chapters'):
             chapters = recording
-            merged = filename + b'.mpeg-merged'
-            recording = filename + b'.mpeg'
+            merged = filename + b'.mp4-merged'
+            recording = filename + b'.mp4'
             if not os.path.exists(chapters) or os.path.getsize(chapters) == 132:
                 log('[WARNING] No commercials found, skipping...')
                 cleanup(filename, _check=False)
@@ -81,9 +81,9 @@ async def main():
             await run(NICE, '-n', '15', IONICE, '-c', '3',
                       MKVMERGE, '-o', merged, '--chapters', chapters, recording, _filename=filename)
 
-        elif recording.endswith(b'.mpeg-merged'):
+        elif recording.endswith(b'.mp4-merged'):
             merged = recording
-            recording = filename + b'.mpeg'
+            recording = filename + b'.mp4'
             log(f'[3/3] Commercial cutpoints FILENAME="{merged}" merged succesfully')
             try:
                 os.rename(merged, recording)

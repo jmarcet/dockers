@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cleanuprecordings.sh | tee -a ${LOG_COMSKIP} &
+#/app/cleanuprecordings.sh | tee -a ${LOG_COMSKIP} &
 
-comskip-recordings.py
+/app/comskip-recordings.py

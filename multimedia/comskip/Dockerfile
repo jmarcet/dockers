@@ -1,8 +1,9 @@
-FROM lsiobase/alpine:edge as buildstage
+FROM python:3.9-slim as buildstage
 ############## build stage ##############
 
 # package versions
 ARG ARGTABLE_VER="2.13"
+ARG ARGTABLE_VER1="2-13"
 
 # environment settings
 ARG TZ="Europe/Madrid"
@@ -10,21 +11,9 @@ ARG TZ="Europe/Madrid"
 # copy patches
 COPY patches/ /tmp/patches/
 
+RUN apt-get update && apt-get install -y build-essential autoconf curl git libtool pkg-config \
+	libavutil-dev libavformat-dev libavcodec-dev
 RUN \
- echo "**** install build packages ****" && \
- apk -u add --no-cache \
-	build-base \
-	autoconf \
-	automake \
-	curl \
-	ffmpeg-dev \
-	git \
-	libtool \
-	pkgconf
-
-RUN \
- echo "**** compile argtable2 ****" && \
- ARGTABLE_VER1="${ARGTABLE_VER//./-}" && \
  mkdir -p \
 	/tmp/argtable && \
  curl -o \
@@ -40,11 +29,9 @@ RUN \
  make -j 2 && \
  make check && \
  make DESTDIR=/tmp/argtable-build install && \
- echo "**** copy to /usr for comskip dependency ****" && \
  cp -pr /tmp/argtable-build/usr/* /usr/
 
 RUN \
- echo "***** compile comskip ****" && \
  git clone git://github.com/erikkaashoek/Comskip /tmp/comskip && \
  cd /tmp/comskip && \
  ./autogen.sh && \
@@ -54,25 +41,33 @@ RUN \
  make -j 2 && \
  make DESTDIR=/tmp/comskip-build install
 
-############## runtime stage ##############
-FROM python:alpine
 
-RUN \
- echo "**** install runtime packages ****" && \
- apk add --no-cache \
-	ffmpeg \
-	inotify-tools \
-	mkvtoolnix && \
- rm -rf /var/cache/apk/*
+############## runtime stage ##############
+FROM python:3.9-slim
+
+RUN apt-get update && apt-get upgrade -y && \
+	apt-get install -y \
+	ffmpeg git htop inotify-tools iputils-ping netcat \
+	net-tools mkvtoolnix procps vainfo vim wget
+
+RUN apt-get -y clean && apt-get -y autoremove
 
 # copy local files and buildstage artifacts
 COPY --from=buildstage /tmp/argtable-build/usr/ /usr/
 COPY --from=buildstage /tmp/comskip-build/usr/ /usr/
 COPY comskip.ini /etc/
-COPY comskip-recordings.py /usr/bin/
-COPY cleanuprecordings.sh /usr/bin/
-COPY start.sh /usr/bin/
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY comskip-recordings.py .
+COPY cleanuprecordings.sh .
+COPY start.sh .
 
 USER nobody
 
-ENTRYPOINT ["/usr/bin/start.sh"]
+#ENTRYPOINT ["/app/start.sh"]
+ENTRYPOINT tail -f /dev/null
