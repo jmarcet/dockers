@@ -13,7 +13,6 @@ IPTV_NET=10.64.0.0/12
 
 U7D_ADDRESS=
 U7D_GW=
-U7D_DIR=/storage/timeshift/u7d
 U7D_HOME=/opt/xmltv
 
 MAC_COMSKIP=
