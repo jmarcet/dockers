@@ -56,8 +56,8 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_DB}
-    ports:
-      - '${LAN_IP}:3306:3306'
+    # ports:
+    #   - '${LAN_IP}:3306:3306'
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/nextcloud/db:/var/lib/mysql
