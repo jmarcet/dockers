@@ -23,7 +23,7 @@ services:
   #  memswap_limit: 2gb
 
   emby:
-    image: ghcr.io/linuxserver/emby
+    image: ghcr.io/linuxserver/emby:version-4.5.4.0
     #build: ./emby
     container_name: emby
     restart: ${RESTART_POLICY}
