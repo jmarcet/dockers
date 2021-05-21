@@ -118,38 +118,6 @@ services:
       timeout: 5s
       retries: 3
 
-  #movistartv:
-  #  build: ./movistartv
-  #  container_name: movistartv
-  #  cap_add:
-  #    - NET_ADMIN
-  #    - NET_BROADCAST
-  #    - SYS_ADMIN
-  #    - SYS_NICE
-  #  restart: ${RESTART_POLICY}
-  #  networks:
-  #    imagenio:
-  #    iptv:
-  #      ipv4_address: ${IPTV_ADDRESS}
-  #  mac_address: ${MAC_MOVISTAR1}
-  #  ports:
-  #    - '${LAN_IP}:5000:5000'
-  #  volumes:
-  #    - /etc/localtime:/etc/localtime
-  #    - /opt/movistartv:/home/MovistarTV.Server
-  #    - /storage/recordings:/home/MovistarTV.Server/Videos
-  #  environment:
-  #    - MAC_MOVISTAR2=${MAC_MOVISTAR2}
-  #  cpu_shares: 4096
-  #  cpus: 2
-  #  mem_limit: 512mb
-  #  memswap_limit: 512mb
-  #  healthcheck:
-  #    test: wget http://127.0.0.1:5000/ 2>&1 | grep -q ':5000... connected.'
-  #    interval: 30s
-  #    timeout: 5s
-  #    retries: 3
-
   transmission:
     build: ./transmission
     container_name: transmission
@@ -225,14 +193,6 @@ networks:
         - subnet: ${SUBNET_MULTIMEDIA}
     driver_opts:
       com.docker.network.bridge.name: br-multimedia
-  #imagenio:
-  #  driver: bridge
-  #  ipam:
-  #    driver: default
-  #    config:
-  #      - subnet: ${SUBNET_IMAGENIO}
-  #  driver_opts:
-  #    com.docker.network.bridge.name: br-imagenio
   iptv:
     driver: macvlan
     driver_opts:
