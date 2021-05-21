@@ -1,7 +1,9 @@
 FROM ghcr.io/linuxserver/code-server
 
 RUN apt-get update && apt-get install -y \
-	build-essential docker-compose git golang tmux vim zsh && \
+	build-essential docker-compose flake8 git golang ipython3 tmux vim zsh \
+	python3-ipdb python3-ipython python3-flake8 python3-flake8-docstrings \
+	python3-flake8-polyfill python3-hacking python3-pep8-naming python3-pydocstyle && \
 	apt-get -y clean && apt-get -y autoremove
 
 RUN mv /usr/local/share/.config/yarn/global/node_modules/code-server/lib/vscode/product.json \
