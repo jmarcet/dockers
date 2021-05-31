@@ -9,18 +9,25 @@ services:
     mac_address: ${MAC_GITLAB}
     ports:
       - '127.0.0.1:8085:80'
+      - '127.0.0.1:5000:5000'
       - '55055:22'
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/gitlab/config:/etc/gitlab
       - /opt/gitlab/logs:/var/log/gitlab
       - /opt/gitlab/data:/var/opt/gitlab
+      - /opt/gitlab/registry:/var/opt/gitlab/gitlab-rails/shared/registry
       - /opt/gitlab/uploads:/var/opt/gitlab/gitlab-rails/uploads
       - /opt/gitlab-lfs:/var/opt/gitlab-lfs
       - /opt/gitlab-repos:/var/opt/gitlab-repos
     cpus: 3
     mem_limit: 6gb
     memswap_limit: 6gb
+    healthcheck:
+      test: curl --fail -s http://127.0.0.1/ && curl --fail -s http://127.0.0.1:5000/
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   #gitlab-runner:
   #  container_name: gitlab-runner
