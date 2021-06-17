@@ -29,20 +29,21 @@ services:
       timeout: 5s
       retries: 3
 
-  #gitlab-runner:
-  #  container_name: gitlab-runner
-  #  image: gitlab/gitlab-runner:alpine
-  #  mac_address: ${MAC_GITLAB_RUNNER}
-  #  depends_on:
-  #    - gitlab-ce
-  #  extra_hosts:
-  #    - "${GITLAB_DOMAIN}:${LAN_IP}"
-  #  volumes:
-  #    - /opt/gitlab/gitlab-runner:/etc/gitlab-runner
-  #    - /var/run/docker.sock:/var/run/docker.sock
-  #  cpus: 3
-  #  mem_limit: 6gb
-  #  memswap_limit: 6gb
+  gitlab-runner:
+    container_name: gitlab-runner
+    image: gitlab/gitlab-runner:alpine
+    restart: ${RESTART_POLICY}
+    mac_address: ${MAC_GITLAB_RUNNER}
+    depends_on:
+      - gitlab-ce
+    extra_hosts:
+      - "${GITLAB_DOMAIN}:${LAN_IP}"
+    volumes:
+      - /opt/gitlab/gitlab-runner:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    cpus: 3
+    mem_limit: 6gb
+    memswap_limit: 6gb
 
   code-server:
     container_name: code-server
