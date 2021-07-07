@@ -17,7 +17,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/urbackup:/var/urbackup
-      - /storage/backups/urbackup:/backups
+      - /storage/backups/@urbackup:/backups
     cap_add:
       - SYS_ADMIN
     cpu_shares: 1024
