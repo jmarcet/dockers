@@ -90,11 +90,7 @@ services:
       - SYS_ADMIN
       - SYS_NICE
     restart: ${RESTART_POLICY}
-    networks:
-      tvlan:
-        ipv4_address: ${U7D_ADDRESS}
-      iptv:
-        ipv4_address: ${IPTV_ADDRESS}
+    network_mode: host
     volumes:
       - /etc/localtime:/etc/localtime
       - ./movistar_u7d:/app
@@ -103,12 +99,9 @@ services:
     environment:
       - U7D_UID=${U7D_UID}
       - U7D_GID=${U7D_GID}
+      - IPTV_ADDRESS=${IPTV_ADDRESS}
       - LAN_IP=${LAN_IP}
       - RECORDINGS=${RECORDINGS}
-      - MAC_IPTV_U7D=${MAC_IPTV_U7D}
-      - MAC_MOVISTAR_U7D=${MAC_MOVISTAR_U7D}
-      - IPTV_GW=${IPTV_GW}
-      - U7D_GW=${U7D_GW}
     devices:
       - /dev/dri:/dev/dri
     cpu_shares: 4096
@@ -249,20 +242,5 @@ networks:
         - subnet: ${SUBNET_MULTIMEDIA}
     driver_opts:
       com.docker.network.bridge.name: br-multimedia
-  iptv:
-    driver: macvlan
-    driver_opts:
-      parent: eth0.2
-    ipam:
-      config:
-         - subnet: ${IPTV_NET}
-  tvlan:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET_TVLAN}
-    driver_opts:
-      com.docker.network.bridge.name: br-tvlan
 
 # vim: et ci pi sts=2 sw=2 ts=2
