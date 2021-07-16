@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add bash iproute2 iputils procps rtorrent s6
+RUN apk add bash iperf3 iproute2 iputils procps rtorrent s6
 
 ENV HOME="/config"
 
