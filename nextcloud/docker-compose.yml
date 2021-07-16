@@ -102,7 +102,7 @@ services:
     mem_limit: 2gb
     memswap_limit: 2gb
     healthcheck:
-      test: wget -S http://127.0.0.1:9001 2>&1 | grep -q "HTTP/1.1 200 OK"
+      test: nc -zv 127.0.0.1 4369
       interval: 30s
       timeout: 5s
       retries: 3
