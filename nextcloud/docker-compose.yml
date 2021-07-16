@@ -53,7 +53,7 @@ services:
   db:
     image: mariadb
     container_name: nextcloud_db
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=0
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_DB}
     # ports:
