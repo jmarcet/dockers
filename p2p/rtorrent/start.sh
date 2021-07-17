@@ -12,11 +12,11 @@ tc qdisc add dev eth0 ingress
 tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0
 
 for dev in ifb0 eth0; do
-    tc qdisc replace dev $dev handle 10: root tbf rate 280mbit burst 512kb latency 5ms peakrate 300mbit minburst 1549
+    tc qdisc replace dev $dev handle 10: root tbf rate 280mbit burst 1M latency 20ms peakrate 320mbit minburst 1549
 done
 
-nice -n 19 ionice -c 3 s6-setuidgid ${RTORRENT_USER} rtorrent -n -o import=/config/rtorrent.rc-new -o system.daemon.set=true &
+/usr/bin/tmux -L rt new-session -s rt -n rtorrent -d \
+    'ionice -c 3 nice -n 20 s6-setuidgid ${RTORRENT_USER} rtorrent -n -o import=/config/rtorrent.rc-new'
 
 tail -f /dev/null
-
 
