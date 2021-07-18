@@ -128,7 +128,7 @@ services:
       - RECORDINGS=${RECORDINGS}
     devices:
       - /dev/dri:/dev/dri
-    cpu_shares: 4096
+    cpu_shares: 8192
     cpus: 4
     mem_limit: 1gb
     memswap_limit: 1gb
