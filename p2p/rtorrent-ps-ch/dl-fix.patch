@@ -1,0 +1,17 @@
+--- ./build.sh-orig	2021-07-18 13:31:39.000000000 +0000
++++ ./build.sh	2021-07-18 13:41:22.171465804 +0000
+@@ -201,12 +201,12 @@ display_env_vars() { # Display env vars
+ # Sources
+ tarballs=("http://c-ares.haxx.se/download/c-ares-$cares_version.tar.gz")
+ tarballs+=("http://curl.haxx.se/download/curl-$curl_version.tar.gz")
+-tarballs+=("https://dl.bintray.com/chros73/$rt_ps_ch_dirname/pool/x/xmlrpc-c-$xmlrpc_tree/xmlrpc-c-$xmlrpc_tree-$xmlrpc_rev-src.tgz")
++#tarballs+=("https://dl.bintray.com/chros73/$rt_ps_ch_dirname/pool/x/xmlrpc-c-$xmlrpc_tree/xmlrpc-c-$xmlrpc_tree-$xmlrpc_rev-src.tgz")
+ tarballs+=("https://github.com/rakshasa/rtorrent/releases/download/v$rt_version/libtorrent-$lt_version.tar.gz")
+ tarballs+=("https://github.com/rakshasa/rtorrent/releases/download/v$rt_version/rtorrent-$rt_version.tar.gz")
+ 
+ # Get xmlrpc-c from svn if it's not mirrored
+-[[ ! "$xmlrpc_rev" =~ ^(2985|2912|2775)$ ]] && xmlrpc_svn_url="http://svn.code.sf.net/p/xmlrpc-c/code/$xmlrpc_tree@$xmlrpc_rev"
++xmlrpc_svn_url="http://svn.code.sf.net/p/xmlrpc-c/code/$xmlrpc_tree@$xmlrpc_rev"
+ 
+ 
+ # Source package md5 hashes

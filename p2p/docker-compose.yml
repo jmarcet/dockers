@@ -1,9 +1,9 @@
 version: '2.4'
 
 services:
-  rtorrent:
+  rtorrent-ps-ch:
     hostname: rtorrent
-    build: ./rtorrent
+    build: ./rtorrent-ps-ch
     container_name: rtorrent
     cap_add:
       - NET_ADMIN
@@ -11,11 +11,10 @@ services:
       - SYS_ADMIN
       - SYS_NICE
     restart: ${RESTART_POLICY}
-    # network_mode: host
     mac_address: ${MAC_RTORRENT}
-    # command: -n -o import=/config/my-rtorrent.rc
+    # command: tail -f /dev/null
     volumes:
-      - ./rtorrent:/app
+      - ./rtorrent-ps-ch:/app
       - /opt/rtorrent:/config
       - ${DOWNLOADS}:${DOWNLOADS}
     environment:
@@ -25,41 +24,9 @@ services:
       - '${RTORRENT_PORT}:${RTORRENT_PORT}/udp'
     cpu_shares: 64
     cpus: 2
-    cpuset: 1,5
     mem_limit: 512mb
     memswap_limit: 512mb
 
-  #transmission:
-  #  build: ./transmission
-  #  container_name: transmission
-  #  cap_add:
-  #    - SYS_NICE
-  #  restart: ${RESTART_POLICY}
-  #  mac_address: ${MAC_TRANSMISSION}
-  #  ports:
-  #    - '${TRANSMISSION_PORT}:${TRANSMISSION_PORT}'
-  #    - '${TRANSMISSION_PORT}:${TRANSMISSION_PORT}/udp'
-  #    - '127.0.0.1:9091:9091'
-  #  volumes:
-  #    - /etc/localtime:/etc/localtime
-  #    - /opt/transmission:/config
-  #    - /storage/downloads:/storage/downloads
-  #    - /storage/downloads/watch:/watch
-  #  environment:
-  #    #- TRANSMISSION_WEB_HOME=/combustion-release/
-  #    - TRANSMISSION_WEB_HOME=/kettu/
-  #    - PUID=${PUID}
-  #    - PGID=${PGID}
-  #  cpu_shares: 128
-  #  cpus: 1
-  #  cpuset: 1,5
-  #  mem_limit: 2gb
-  #  memswap_limit: 2gb
-  #  healthcheck:
-  #    test: curl --fail -s http://127.0.0.1:9091/
-  #    interval: 30s
-  #    timeout: 60s
-  #    retries: 3
 
 networks:
   default:

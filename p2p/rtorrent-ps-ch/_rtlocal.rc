@@ -1,0 +1,52 @@
+## Listening port for incoming peer traffic (fixed; you can also randomize it)
+network.port_range.set = 6666-6666
+network.port_random.set = no
+
+## Tracker-less torrent and UDP tracker support
+## (conservative settings for 'private' trackers, change for 'public')
+dht.mode.set = disable
+protocol.pex.set = no
+
+trackers.use_udp.set = yes
+
+# throttle.global_down.max_rate.set_kb = 24576
+# throttle.global_up.max_rate.set_kb = 24576
+# throttle.global_down.max_rate.set_kb = 40960
+# throttle.global_up.max_rate.set_kb = 40960
+throttle.global_down.max_rate.set_kb = 0
+throttle.global_up.max_rate.set_kb = 0
+
+## Peer settings
+throttle.max_uploads.set = 10
+throttle.max_uploads.global.set = 100
+throttle.max_downloads.global.set = 200
+
+throttle.min_peers.normal.set = 5
+throttle.max_peers.normal.set = 20
+throttle.min_peers.seed.set = 5
+throttle.max_peers.seed.set = 10
+trackers.numwant.set = 10
+
+protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
+
+## Limits for file handle resources, this is optimized for
+## an `ulimit` of 1024 (a common default). You MUST leave
+## a ceiling of handles reserved for rTorrent's internal needs!
+# network.http.max_open.set = 50
+# network.max_open_files.set = 600
+# network.max_open_sockets.set = 300
+
+## Memory resource usage (increase if you have a large number of items loaded,
+## and/or the available resources to spend)
+pieces.memory.max.set = 1024M
+network.xmlrpc.size_limit.set = 32M
+
+network.bind_address.set = 0.0.0.0
+
+#schedule2 = ip_tick,0,1800,ip=mydomain.org
+#schedule2 = bind_tick,0,1800,bind=mydomain.org
+
+system.file.allocate = 1
+
+session.use_lock = 0
+
