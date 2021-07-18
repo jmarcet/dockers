@@ -99,8 +99,8 @@ services:
       - document_data:/var/www/onlyoffice/Data
       - document_log:/var/log/onlyoffice
     cpus: 2
-    mem_limit: 2gb
-    memswap_limit: 2gb
+    mem_limit: 3gb
+    memswap_limit: 3gb
     healthcheck:
       test: nc -zv 127.0.0.1 4369
       interval: 30s
