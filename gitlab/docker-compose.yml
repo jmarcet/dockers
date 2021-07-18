@@ -20,6 +20,7 @@ services:
       - /opt/gitlab/uploads:/var/opt/gitlab/gitlab-rails/uploads
       - /opt/gitlab-lfs:/var/opt/gitlab-lfs
       - /opt/gitlab-repos:/var/opt/gitlab-repos
+      - /mnt/raid_crypt/@himawari/@gitlab:/mnt/raid_crypt/@himawari/@gitlab
     cpus: 3
     mem_limit: 6gb
     memswap_limit: 6gb
