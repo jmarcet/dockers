@@ -31,14 +31,14 @@ RUN apt-get -y update && apt-get -y install binutils curl git iperf3 \
 COPY ./$_pkg /tmp/
 RUN dpkg -i /tmp/$_pkg && rm -f /tmp/$_pkg
 
-COPY ./start.sh /app/
-COPY ./.* /config/
-COPY ./_* /config/rtorrent/
-
 WORKDIR /config
 RUN git clone "https://github.com/pyroscope/pyrocore.git" ~/.local/pyroscope
 RUN ~/.local/pyroscope/update-to-head.sh
 RUN ~/.local/pyroscope/src/scripts/make-rtorrent-config.sh
+
+COPY ./start.sh /app/
+COPY ./.* /config/
+COPY ./_* ./start /config/rtorrent/
 
 WORKDIR $HOME
 
