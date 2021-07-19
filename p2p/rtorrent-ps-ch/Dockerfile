@@ -7,8 +7,8 @@ ENV _pkg="rtorrent-ps-ch_1.8.3-0.9.8-debian-buster_amd64.deb"
 
 RUN mkdir -p /app /config/bin /config/.local /config/rtorrent
 
-RUN apt-get -y update && apt-get -y install binutils curl git iperf3 \
-    iproute2 less libcppunit-dev lsb-release lsof procps tmux s6 vim wget
+RUN apt-get -y update && apt-get -y install bash-completion binutils curl git \
+    iperf3 iproute2 less libcppunit-dev lsb-release lsof procps tmux s6 vim wget
 
 # build rtorrent-ps-ch deb
 # RUN apt-get -y install sudo tmux coreutils binutils build-essential subversion git time \
