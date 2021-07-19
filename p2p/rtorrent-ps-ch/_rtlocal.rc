@@ -16,16 +16,16 @@ trackers.use_udp.set = yes
 throttle.global_down.max_rate.set_kb = 0
 throttle.global_up.max_rate.set_kb = 0
 
-## Peer settings
-throttle.max_uploads.set = 10
-throttle.max_uploads.global.set = 100
-throttle.max_downloads.global.set = 200
-
-throttle.min_peers.normal.set = 5
-throttle.max_peers.normal.set = 20
-throttle.min_peers.seed.set = 5
-throttle.max_peers.seed.set = 10
-trackers.numwant.set = 10
+# ## Peer settings
+# throttle.max_uploads.set = 20
+# throttle.max_uploads.global.set = 100
+# throttle.max_downloads.global.set = 200
+#
+# throttle.min_peers.normal.set = 5
+# throttle.max_peers.normal.set = 20
+# throttle.min_peers.seed.set = 5
+# throttle.max_peers.seed.set = 10
+# trackers.numwant.set = 10
 
 protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
 
@@ -38,7 +38,7 @@ protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
 
 ## Memory resource usage (increase if you have a large number of items loaded,
 ## and/or the available resources to spend)
-pieces.memory.max.set = 1024M
+pieces.memory.max.set = 4096M
 network.xmlrpc.size_limit.set = 32M
 
 network.bind_address.set = 0.0.0.0
