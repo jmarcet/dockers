@@ -11,7 +11,7 @@ services:
       - SYS_ADMIN
       - SYS_NICE
     restart: ${RESTART_POLICY}
-    network_mode: host
+    mac_address: ${MAC_RTORRENT}
     # command: tail -f /dev/null
     volumes:
       - ./rtorrent-ps-ch:/app
@@ -19,10 +19,23 @@ services:
       - ${DOWNLOADS}:${DOWNLOADS}
     environment:
       - RTORRENT_USER=${RTORRENT_USER}
+    ports:
+      - '${RTORRENT_PORT}:${RTORRENT_PORT}'
+      - '${RTORRENT_PORT}:${RTORRENT_PORT}/udp'
     cpu_shares: 64
     cpus: 2
     mem_limit: 512mb
     memswap_limit: 512mb
 
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_P2P}
+    driver_opts:
+      com.docker.network.bridge.name: br-p2p
 
 # vim: et ci pi sts=2 sw=2 ts=2
