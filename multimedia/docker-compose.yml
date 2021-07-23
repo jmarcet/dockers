@@ -125,6 +125,7 @@ services:
       - U7D_GID=${U7D_GID}
       - IPTV_ADDRESS=${IPTV_ADDRESS}
       - LAN_IP=${LAN_IP}
+      - PARALLEL_RECORDINGS=${PARALLEL_RECORDINGS}
       - RECORDINGS=${RECORDINGS}
     devices:
       - /dev/dri:/dev/dri
