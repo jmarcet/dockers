@@ -16,7 +16,7 @@ services:
       - /opt/nextcloud/custom_apps:/var/www/html/custom_apps
       - /opt/nextcloud/config.php:/var/www/html/config/config.php
       - /opt/nextcloud/themes:/var/www/html/themes
-      - /storage/.nextcloud:/var/www/html/data
+      - /mnt/raid/@nextcloud:/var/www/html/data
       - /storage/books:/storage/books:ro
       - /storage/documentaries:/storage/documentaries:ro
       - /storage/downloads:/storage/downloads:ro
