@@ -165,7 +165,6 @@ services:
       - ${RECORDINGS}:${RECORDINGS}
     environment:
       - U7D_UID=${U7D_UID}
-      - U7D_GID=${U7D_GID}
       - IPTV_ADDRESS=${IPTV_ADDRESS}
       - LAN_IP=${LAN_IP}
       - PARALLEL_RECORDINGS=${PARALLEL_RECORDINGS}
