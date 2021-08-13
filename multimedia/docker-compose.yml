@@ -22,39 +22,39 @@ services:
   #  mem_limit: 2gb
   #  memswap_limit: 2gb
 
-  emby:
-    # image: ghcr.io/linuxserver/emby
-    image: ghcr.io/linuxserver/emby:version-4.5.4.0
-    # build: ./emby
-    container_name: emby
-    restart: ${RESTART_POLICY}
-    mac_address: ${MAC_EMBY}
-    ports:
-      - '${LAN_IP}:8096:8096'
-    devices:
-      - /dev/dri:/dev/dri
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - /opt/emby:/config
-      - /storage/documentaries:/storage/documentaries
-      - /storage/movies:/storage/movies
-      - /storage/peliculas:/storage/peliculas
-      - /storage/recordings:/storage/recordings
-      - /storage/series:/storage/series
-      - /storage/timeshift:/storage/timeshift
-      - /storage/tvshows:/storage/tvshows
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-    cpu_shares: 1024
-    cpus: 3
-    mem_limit: 2gb
-    memswap_limit: 2gb
-    healthcheck:
-      test: curl --fail -s http://127.0.0.1:8096/
-      interval: 30s
-      timeout: 5s
-      retries: 3
+  # emby:
+  #   # image: ghcr.io/linuxserver/emby
+  #   image: ghcr.io/linuxserver/emby:version-4.5.4.0
+  #   # build: ./emby
+  #   container_name: emby
+  #   restart: ${RESTART_POLICY}
+  #   mac_address: ${MAC_EMBY}
+  #   ports:
+  #     - '${LAN_IP}:8096:8096'
+  #   devices:
+  #     - /dev/dri:/dev/dri
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime
+  #     - /opt/emby:/config
+  #     - /storage/documentaries:/storage/documentaries
+  #     - /storage/movies:/storage/movies
+  #     - /storage/peliculas:/storage/peliculas
+  #     - /storage/recordings:/storage/recordings
+  #     - /storage/series:/storage/series
+  #     - /storage/timeshift:/storage/timeshift
+  #     - /storage/tvshows:/storage/tvshows
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #   cpu_shares: 1024
+  #   cpus: 3
+  #   mem_limit: 2gb
+  #   memswap_limit: 2gb
+  #   healthcheck:
+  #     test: curl --fail -s http://127.0.0.1:8096/
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 3
 
   flood:
     hostname: flood
@@ -79,6 +79,49 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+
+  jellyfin:
+    # image: ghcr.io/linuxserver/jellyfin:nightly
+    build: ./jellyfin
+    # image: jellyfin/jellyfin:10.5.5
+    # image: jellyfin/jellyfin:10.6.0
+    # image: jellyfin/jellyfin:10.7.2
+    # image: jellyfin/jellyfin
+    container_name: jellyfin
+    restart: ${RESTART_POLICY}
+    privileged: true
+    # network_mode: host
+    mac_address: ${MAC_JELLYFIN}
+    ports:
+      - '${LAN_IP}:8096:8096'
+      # - '${LAN_IP}:1900:1900/udp'
+      - '${LAN_IP}:7359:7359/udp'
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /opt/jellyfin:/config
+      - /opt/jellyfin-cache:/cache
+      - /storage/documentaries:/storage/documentaries
+      - /storage/movies:/storage/movies
+      - /storage/peliculas:/storage/peliculas
+      - /storage/recordings:/storage/recordings
+      - /storage/series:/storage/series
+      - /storage/timeshift:/storage/timeshift
+      - /storage/tvshows:/storage/tvshows
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    cpu_shares: 1024
+    cpus: 3
+    mem_limit: 2gb
+    memswap_limit: 2gb
+    #healthcheck:
+    #  test: curl --fail -s http://127.0.0.1:8096/
+    #  interval: 30s
+    #  timeout: 5s
+    #  retries: 3
 
   medusa:
     image: linuxserver/medusa
