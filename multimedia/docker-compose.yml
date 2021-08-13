@@ -149,7 +149,8 @@ services:
       retries: 3
 
   movistar_u7d:
-    build: ./movistar_u7d
+    # build: ./movistar_u7d
+    image: registry.marcet.info/javier/movistar-u7d
     container_name: movistar_u7d
     cap_add:
       - NET_ADMIN
