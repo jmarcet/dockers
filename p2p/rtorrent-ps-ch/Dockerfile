@@ -2,7 +2,6 @@ FROM python:2.7-slim
 
 ENV HOME="/config"
 ENV PATH="/app:/config/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-ENV RT_HOME="/config/rtorrent"
 ENV _pkg="rtorrent-ps-ch_1.8.3-0.9.8-debian-buster_amd64.deb"
 
 RUN mkdir -p /app /config/bin /config/.local /config/rtorrent
@@ -34,14 +33,12 @@ RUN dpkg -i /tmp/$_pkg && rm -f /tmp/$_pkg
 WORKDIR /config
 RUN git clone "https://github.com/pyroscope/pyrocore.git" ~/.local/pyroscope
 RUN ~/.local/pyroscope/update-to-head.sh
-RUN ~/.local/pyroscope/src/scripts/make-rtorrent-config.sh
+# RUN ~/.local/pyroscope/src/scripts/make-rtorrent-config.sh
 
 COPY ./start.sh /app/
-COPY ./.* /config/
-COPY ./_* ./start /config/rtorrent/
+COPY ./config/.* /config/
 
 WORKDIR $HOME
 
 CMD /app/start.sh
-#CMD tail -f /dev/null
 

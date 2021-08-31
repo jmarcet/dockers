@@ -13,11 +13,11 @@
 #     tc qdisc replace dev $dev handle 10: root tbf rate 400mbit burst 1M latency 20ms peakrate 480mbit minburst 1529
 # done
 
-test -e /config/rtorrent/.session/rtorrent.lock && pidof rtorrent \
-    || rm -f /config/rtorrent/.session/rtorrent.lock
+test -e ${DOWNLOADS}/.rtorrent/.session/rtorrent.lock && pidof rtorrent \
+    || rm -f ${DOWNLOADS}/.rtorrent/.session/rtorrent.lock
 
-/usr/bin/tmux -2u new -n rT-PS -s rtorrent -d \
-    "ionice -c 3 nice -n 19 s6-setuidgid ${RTORRENT_USER} /config/rtorrent/start"
+ /usr/bin/tmux -2u new -n rT-PS -s rtorrent -d \
+     "ionice -c 3 nice -n 19 s6-setuidgid ${RTORRENT_USER} env TERM=screen-256color rtorrent"
 
 tail -f /dev/null
 
