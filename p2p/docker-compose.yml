@@ -20,6 +20,7 @@ services:
     environment:
       - RTORRENT_USER=${RTORRENT_USER}
     ports:
+      - '${DHT_PORT}:${DHT_PORT}/udp'
       - '${RTORRENT_PORT}:${RTORRENT_PORT}'
       - '${RTORRENT_PORT}:${RTORRENT_PORT}/udp'
     cpu_shares: 64
