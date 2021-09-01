@@ -168,41 +168,41 @@ method.insert = d.move_to, simple, "d.move_to.check_data_dir=$argument.0=,$argum
 
 ##### end: Directory methods #####
 
-
+method.insert = d.modify_choke_group, simple|private, "((d.group.set,(cat,default_,(d.connection_current))))"
 
 ##### begin: Favouring special group of torrents over the rest #####
 
-# helper method: Sets choke group to one of the default ones if there's no throttle or throttle is special one (NULL) otherwise sets it to one of the throttle name ones
-method.insert = d.modify_choke_group, simple|private, "branch=((and,((d.throttle_name)),((not,((equal,((d.throttle_name)),((cat,NULL)))))))),((d.group.set,(cat,(d.throttle_name),_,(d.connection_current)))),((d.group.set,(cat,default_,(d.connection_current))))"
-# helper method: Modifies the peers_min, peers_max, max_uploads values of a torrent for both downloading and uploading
-method.insert = d.modify_slots, simple|private, "d.peers_min.set=(argument.0); d.peers_max.set=(argument.1); d.uploads_max.set=(argument.2)"
-# Modifies the above properties for a torrent based on which group it belongs to
-method.insert = d.modify_slots_both, simple, "branch=((not,(d.throttle_name))),((d.modify_slots,(throttle.min_peers.normal),(throttle.max_peers.normal),(throttle.max_uploads))),((d.modify_slots,(cfg.slowup.d.peers_min),(cfg.slowup.d.peers_max),(cfg.slowup.d.uploads_max)))"
-# Modify both group values when a torrent is resumed (even after hashchecking or after rtorrent is restarted)
-method.set_key = event.download.resumed, modify_slots_resumed_both, "d.modify_slots_both=; d.modify_choke_group="
-method.set_key = event.download.finished, modify_finished_choke_group, "d.modify_choke_group="
-method.set_key = event.download.partially_restarted, modify_partially_restarted_choke_group, "d.modify_choke_group="
+# # helper method: Sets choke group to one of the default ones if there's no throttle or throttle is special one (NULL) otherwise sets it to one of the throttle name ones
+# method.insert = d.modify_choke_group, simple|private, "branch=((and,((d.throttle_name)),((not,((equal,((d.throttle_name)),((cat,NULL)))))))),((d.group.set,(cat,(d.throttle_name),_,(d.connection_current)))),((d.group.set,(cat,default_,(d.connection_current))))"
+# # helper method: Modifies the peers_min, peers_max, max_uploads values of a torrent for both downloading and uploading
+# method.insert = d.modify_slots, simple|private, "d.peers_min.set=(argument.0); d.peers_max.set=(argument.1); d.uploads_max.set=(argument.2)"
+# # Modifies the above properties for a torrent based on which group it belongs to
+# method.insert = d.modify_slots_both, simple, "branch=((not,(d.throttle_name))),((d.modify_slots,(throttle.min_peers.normal),(throttle.max_peers.normal),(throttle.max_uploads))),((d.modify_slots,(cfg.slowup.d.peers_min),(cfg.slowup.d.peers_max),(cfg.slowup.d.uploads_max)))"
+# # Modify both group values when a torrent is resumed (even after hashchecking or after rtorrent is restarted)
+# method.set_key = event.download.resumed, modify_slots_resumed_both, "d.modify_slots_both=; d.modify_choke_group="
+# method.set_key = event.download.finished, modify_finished_choke_group, "d.modify_choke_group="
+# method.set_key = event.download.partially_restarted, modify_partially_restarted_choke_group, "d.modify_choke_group="
 
-# Gets current uprate in KB for special group
-method.insert = get_uprate_main, simple, "math.max=0,(math.div,(math.sub,(throttle.global_up.rate),(throttle.up.rate,slowup),(throttle.up.rate,tardyup)),1024)"
-# helper methods: get new uprate limit in KB (based on special group uprate) for slowup and tardyup throttle groups
-method.insert = get_uprate_slowup,  simple|private, "math.min=(cfg.slowup.uprate.max),(math.max,(cfg.slowup.uprate.min),(math.sub,(cfg.slowup.uprate.max),(get_uprate_main),(math.div,(throttle.up.rate,tardyup),1024)))"
-method.insert = get_uprate_tardyup, simple|private, "math.min=(cfg.tardyup.uprate.max),(math.max,(cfg.tardyup.uprate.min),(math.sub,(cfg.tardyup.uprate.max),(get_uprate_main),(math.div,(throttle.up.rate,slowup),1024)))"
-# Set new uprate limit for slowup and tardyup throttle groups in every 20 seconds
-schedule2     = adjust_throttle_slowup,  14, 20, "throttle.up=slowup,(cat,(get_uprate_slowup))"
-schedule2     = adjust_throttle_tardyup, 15, 20, "throttle.up=tardyup,(cat,(get_uprate_tardyup))"
-
-# helper method: get new global downrate limit in KB (based on special group uprate and given threshold values)
-method.insert = get_downrate_global, simple|private, "branch=(and,((greater,((math.div,(throttle.global_up.rate),1024)),((cfg.global.upall.threshold)))),((greater,((get_uprate_main)),((cfg.global.upmain.threshold))))),(cfg.global.downrate.min),(cfg.global.downrate.max)"
-# Set new global downrate limit in every 60 seconds
-schedule2     = adjust_throttle_global_down_max_rate, 54, 60, "throttle.global_down.max_rate.set_kb=(get_downrate_global)"
-
-# helper methods: get new upload slots limit for slowup_seed and tardyup_seed choke groups (based on their current uprate and the given cfg values)
-method.insert = get_slots_slowup,  simple|private, "math.min=(cfg.slowup.slots.seed.max),(math.max,(math.div,(cfg.slowup.uprate.min),(cfg.global.slot.uprate.min)),(math.div,(throttle.up.rate,slowup),1024,(cfg.global.slot.uprate.min)))"
-method.insert = get_slots_tardyup, simple|private, "math.min=(cfg.tardyup.slots.seed.max),(math.max,(math.div,(cfg.tardyup.uprate.min),(cfg.global.slot.uprate.min)),(math.div,(throttle.up.rate,tardyup),1024,(cfg.global.slot.uprate.min)))"
-# Set new upload slots (unchoked peers) limit for slowup_seed and tardyup_seed choke groups in every 100 seconds
-schedule2     = adjust_slots_slowup,  47, 100,"choke_group.up.max.set=slowup_seed,(cat,(get_slots_slowup))"
-schedule2     = adjust_slots_tardyup, 48, 100,"choke_group.up.max.set=tardyup_seed,(cat,(get_slots_tardyup))"
+# # Gets current uprate in KB for special group
+# method.insert = get_uprate_main, simple, "math.max=0,(math.div,(math.sub,(throttle.global_up.rate),(throttle.up.rate,slowup),(throttle.up.rate,tardyup)),1024)"
+# # helper methods: get new uprate limit in KB (based on special group uprate) for slowup and tardyup throttle groups
+# method.insert = get_uprate_slowup,  simple|private, "math.min=(cfg.slowup.uprate.max),(math.max,(cfg.slowup.uprate.min),(math.sub,(cfg.slowup.uprate.max),(get_uprate_main),(math.div,(throttle.up.rate,tardyup),1024)))"
+# method.insert = get_uprate_tardyup, simple|private, "math.min=(cfg.tardyup.uprate.max),(math.max,(cfg.tardyup.uprate.min),(math.sub,(cfg.tardyup.uprate.max),(get_uprate_main),(math.div,(throttle.up.rate,slowup),1024)))"
+# # Set new uprate limit for slowup and tardyup throttle groups in every 20 seconds
+# schedule2     = adjust_throttle_slowup,  14, 20, "throttle.up=slowup,(cat,(get_uprate_slowup))"
+# schedule2     = adjust_throttle_tardyup, 15, 20, "throttle.up=tardyup,(cat,(get_uprate_tardyup))"
+#
+# # helper method: get new global downrate limit in KB (based on special group uprate and given threshold values)
+# method.insert = get_downrate_global, simple|private, "branch=(and,((greater,((math.div,(throttle.global_up.rate),1024)),((cfg.global.upall.threshold)))),((greater,((get_uprate_main)),((cfg.global.upmain.threshold))))),(cfg.global.downrate.min),(cfg.global.downrate.max)"
+# # Set new global downrate limit in every 60 seconds
+# schedule2     = adjust_throttle_global_down_max_rate, 54, 60, "throttle.global_down.max_rate.set_kb=(get_downrate_global)"
+#
+# # helper methods: get new upload slots limit for slowup_seed and tardyup_seed choke groups (based on their current uprate and the given cfg values)
+# method.insert = get_slots_slowup,  simple|private, "math.min=(cfg.slowup.slots.seed.max),(math.max,(math.div,(cfg.slowup.uprate.min),(cfg.global.slot.uprate.min)),(math.div,(throttle.up.rate,slowup),1024,(cfg.global.slot.uprate.min)))"
+# method.insert = get_slots_tardyup, simple|private, "math.min=(cfg.tardyup.slots.seed.max),(math.max,(math.div,(cfg.tardyup.uprate.min),(cfg.global.slot.uprate.min)),(math.div,(throttle.up.rate,tardyup),1024,(cfg.global.slot.uprate.min)))"
+# # Set new upload slots (unchoked peers) limit for slowup_seed and tardyup_seed choke groups in every 100 seconds
+# schedule2     = adjust_slots_slowup,  47, 100,"choke_group.up.max.set=slowup_seed,(cat,(get_slots_slowup))"
+# schedule2     = adjust_slots_tardyup, 48, 100,"choke_group.up.max.set=tardyup_seed,(cat,(get_slots_tardyup))"
 
 ##### end: Favouring special group of torrents over the rest #####
 
