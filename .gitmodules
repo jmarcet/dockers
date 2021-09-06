@@ -14,3 +14,7 @@
 	path = multimedia/movistar_u7d
 	url = ssh://git@gitlab.marcet.info:55055/javier/movistar-u7d.git
 	branch = master
+[submodule "multimedia/jellyfin"]
+	path = multimedia/jellyfin
+	url = https://github.com/jellyfin/jellyfin
+	branch = release-10.7.z
