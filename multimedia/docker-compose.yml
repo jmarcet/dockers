@@ -22,40 +22,6 @@ services:
   #  mem_limit: 2gb
   #  memswap_limit: 2gb
 
-  # emby:
-  #   # image: ghcr.io/linuxserver/emby
-  #   image: ghcr.io/linuxserver/emby:version-4.5.4.0
-  #   # build: ./emby
-  #   container_name: emby
-  #   restart: ${RESTART_POLICY}
-  #   mac_address: ${MAC_EMBY}
-  #   ports:
-  #     - '${LAN_IP}:8096:8096'
-  #   devices:
-  #     - /dev/dri:/dev/dri
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime
-  #     - /opt/emby:/config
-  #     - /storage/documentaries:/storage/documentaries
-  #     - /storage/movies:/storage/movies
-  #     - /storage/peliculas:/storage/peliculas
-  #     - /storage/recordings:/storage/recordings
-  #     - /storage/series:/storage/series
-  #     - /storage/timeshift:/storage/timeshift
-  #     - /storage/tvshows:/storage/tvshows
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #   cpu_shares: 1024
-  #   cpus: 3
-  #   mem_limit: 2gb
-  #   memswap_limit: 2gb
-  #   healthcheck:
-  #     test: curl --fail -s http://127.0.0.1:8096/
-  #     interval: 30s
-  #     timeout: 5s
-  #     retries: 3
-
   flood:
     hostname: flood
     image: jesec/flood
