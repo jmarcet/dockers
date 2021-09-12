@@ -120,20 +120,19 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime
       - ./movistar_u7d:/app
-      - ${U7D_HOME}:/home
       - ${RECORDINGS}:${RECORDINGS}
+      - ${U7D_HOME}:/home
     environment:
-      - U7D_UID=${U7D_UID}
-      - LAN_IP=${LAN_IP}
       - EPG_THREADS=${EPG_THREADS}
-      - RECORDING_THREADS=${RECORDING_THREADS}
+      - LAN_IP=${LAN_IP}
       - RECORDINGS=${RECORDINGS}
+      - U7D_UID=${U7D_UID}
     devices:
       - /dev/dri:/dev/dri
     cpu_shares: 8192
     cpus: 4
-    mem_limit: 1gb
-    memswap_limit: 1gb
+    mem_limit: 2gb
+    memswap_limit: 2gb
     healthcheck:
       test: /app/health.sh
       interval: 300s
