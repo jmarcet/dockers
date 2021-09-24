@@ -2,12 +2,13 @@ FROM python:2.7-slim
 
 ENV HOME="/config"
 ENV PATH="/app:/config/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV TERM="screen-256color"
 ENV _pkg="rtorrent-ps-ch_1.8.3-0.9.8-debian-buster_amd64.deb"
 
 RUN mkdir -p /app /config/bin /config/.local /config/rtorrent
 
-RUN apt-get -y update && apt-get -y install bash-completion binutils curl git \
-    iperf3 iproute2 less libcppunit-dev lsb-release lsof procps tmux s6 vim wget
+RUN apt-get -y update && apt-get -y install bash-completion binutils cron curl dialog git \
+    iperf3 iproute2 less libcppunit-dev lsb-release lsof msmtp procps tmux s6 vim wget
 
 # build rtorrent-ps-ch deb
 # RUN apt-get -y install sudo tmux coreutils binutils build-essential subversion git time \
@@ -37,6 +38,8 @@ RUN ~/.local/pyroscope/update-to-head.sh
 
 COPY ./start.sh /app/
 COPY ./config/.* /config/
+RUN rm -fr /etc/crontabs && ln -s /var/spool/cron/crontabs /etc/
+COPY --chown=65534 ./crontab /etc/crontabs/nobody
 
 WORKDIR $HOME
 
