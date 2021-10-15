@@ -115,8 +115,9 @@ services:
       - SYS_NICE
     restart: ${RESTART_POLICY}
     network_mode: host
-    dns: 172.26.23.3
-    dns_search: telefonica.net
+    dns:
+      - 172.26.23.3
+      - 127.0.0.1
     volumes:
       - /etc/localtime:/etc/localtime
       - ./movistar_u7d:/app
@@ -124,6 +125,7 @@ services:
       - ${U7D_HOME}:/home
     environment:
       - EPG_THREADS=${EPG_THREADS}
+      - IPTV_BW=${IPTV_BW}
       - LAN_IP=${LAN_IP}
       - RECORDINGS=${RECORDINGS}
       - U7D_UID=${U7D_UID}
