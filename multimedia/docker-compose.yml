@@ -24,7 +24,7 @@ services:
 
   flood:
     hostname: flood
-    image: jesec/flood
+    image: jesec/flood:4.6.1
     container_name: flood
     user: ${PUID}:${PGID}
     restart: ${RESTART_POLICY}
