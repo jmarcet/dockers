@@ -66,9 +66,9 @@ services:
       - MYSQL_USER=nextcloud
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    cpus: 1
-    mem_limit: 1gb
-    memswap_limit: 1gb
+    cpus: 2
+    mem_limit: 2gb
+    memswap_limit: 2gb
 
   redis:
     image: redis:alpine
