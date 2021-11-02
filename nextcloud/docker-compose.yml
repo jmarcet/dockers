@@ -8,6 +8,8 @@ services:
     tty: true
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       - '127.0.0.1:8086:80'
     volumes:
@@ -56,6 +58,8 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=0
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_DB}
+    labels:
+      org.label-schema.group: "monitored"
     # ports:
     #   - '${LAN_IP}:3306:3306'
     volumes:
@@ -75,6 +79,8 @@ services:
     container_name: nextcloud_redis
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_NEXTCLOUD_REDIS}
+    labels:
+      org.label-schema.group: "monitored"
     cpus: 1
     mem_limit: 128mb
     memswap_limit: 128mb
@@ -92,6 +98,8 @@ services:
     tty: true
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_ONLYOFFICE}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       - '127.0.0.1:8087:80'
     volumes:

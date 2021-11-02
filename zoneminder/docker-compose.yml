@@ -7,6 +7,8 @@ services:
     hostname: db
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_ZM_DB}
+    labels:
+      org.label-schema.group: "monitored"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/zoneminder/mysql:/var/lib/mysql
@@ -25,6 +27,8 @@ services:
     container_name: zoneminder
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_ZM_WEB}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       - "127.0.0.1:8090:80"
     volumes:

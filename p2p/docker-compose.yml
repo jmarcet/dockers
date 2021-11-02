@@ -12,6 +12,8 @@ services:
       - SYS_NICE
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_RTORRENT}
+    labels:
+      org.label-schema.group: "monitored"
     # command: tail -f /dev/null
     volumes:
       - /etc/localtime:/etc/localtime

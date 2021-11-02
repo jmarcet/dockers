@@ -7,6 +7,8 @@ services:
     hostname: ${GITLAB_DOMAIN}
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_GITLAB}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       - '127.0.0.1:8085:80'
       - '127.0.0.1:5000:5000'
@@ -35,6 +37,8 @@ services:
     image: gitlab/gitlab-runner:alpine
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_GITLAB_RUNNER}
+    labels:
+      org.label-schema.group: "runner"
     depends_on:
       - gitlab-ce
     extra_hosts:
@@ -52,6 +56,8 @@ services:
     build: ./code-server
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_CODESERVER}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       - '127.0.0.1:8095:8443'
     environment:

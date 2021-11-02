@@ -6,6 +6,8 @@ services:
     container_name: urbackup
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_URBACKUP}
+    labels:
+      org.label-schema.group: "monitored"
     ports:
       #- '${LAN_IP}:55413:55413'
       - '127.0.0.1:55414:55414'
