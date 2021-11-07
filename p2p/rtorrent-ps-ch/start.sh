@@ -19,7 +19,7 @@ test -e ${DOWNLOADS}/.rtorrent/.session/rtorrent.lock && pidof rtorrent \
 /etc/init.d/cron start
 
 /usr/bin/tmux -2u new -n rT-PS -s rtorrent -d \
-     "ionice -c 3 nice -n 19 s6-setuidgid ${RTORRENT_USER} rtorrent"
+    "ionice -c 3 nice -n 19 s6-setuidgid ${RTORRENT_USER} rtorrent"
 
 tail -f /dev/null
 
