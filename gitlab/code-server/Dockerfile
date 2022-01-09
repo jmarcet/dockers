@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/code-server
+FROM ghcr.io/linuxserver/code-server:v3.12.0-ls107
 
 RUN apt-get update && apt-get install -y \
 	build-essential docker-compose flake8 git golang ipython3 tmux vim zsh \
