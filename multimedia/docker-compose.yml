@@ -134,9 +134,9 @@ services:
       - ${RECORDINGS}:${RECORDINGS}
       - ${U7D_HOME}:/home
     environment:
-      - EPG_THREADS=${EPG_THREADS}
       - IPTV_BW=${IPTV_BW}
       - LAN_IP=${LAN_IP}
+      # - MP4_OUTPUT=${MP4_OUTPUT}
       - RECORDINGS=${RECORDINGS}
       - U7D_UID=${U7D_UID}
     devices:
