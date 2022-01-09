@@ -5,36 +5,21 @@ services:
     image: uroni/urbackup-server:latest
     container_name: urbackup
     restart: ${RESTART_POLICY}
-    mac_address: ${MAC_URBACKUP}
+    network_mode: host
     labels:
       org.label-schema.group: "monitored"
-    ports:
-      #- '${LAN_IP}:55413:55413'
-      - '127.0.0.1:55414:55414'
-      #- '${LAN_IP}:55415:55415'
-      - '${LAN_IP}:35623:35623/udp'
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/urbackup:/var/urbackup
-      - /mnt/raid_crypt/@urbackup:/backups
+      - $BACKUPS:/backups
     cap_add:
       - SYS_ADMIN
     cpu_shares: 1024
     cpus: 3
     mem_limit: 2gb
     memswap_limit: 2gb
-
-networks:
-  default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET_URBACKUP}
-    driver_opts:
-      com.docker.network.bridge.name: br-urbackup
 
 # vim: et ci pi sts=2 sw=2 ts=2
