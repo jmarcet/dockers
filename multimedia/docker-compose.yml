@@ -26,21 +26,21 @@ services:
 
   flood:
     hostname: flood
-    image: jesec/flood:4.6.1
+    image: jesec/flood
     container_name: flood
     user: ${PUID}:${PGID}
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_FLOOD}
     labels:
       org.label-schema.group: "monitored"
-    command: --port 9091 --allowedpath ${DOWNLOADS}
+    command: --allowedpath ${DOWNLOADS}
     environment:
       HOME: /config
     volumes:
       - /opt/rtorrent:/config
       - ${DOWNLOADS}:${DOWNLOADS}
     ports:
-      - '127.0.0.1:9091:9091'
+      - '127.0.0.1:9091:3000'
     cpus: 2
     mem_limit: 128mb
     memswap_limit: 128mb
