@@ -33,8 +33,11 @@ services:
       retries: 3
 
   gitlab-runner:
-    container_name: gitlab-runner
     image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_GITLAB_RUNNER}
     labels:
