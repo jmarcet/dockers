@@ -37,15 +37,15 @@ method.insert = pyro.last_xfer.min_rate, value, 5000
 # throttle.global_down.max_rate.set_kb = 40960
 # throttle.global_up.max_rate.set_kb = 40960
 throttle.global_down.max_rate.set_kb = 0
-throttle.global_up.max_rate.set_kb = 0
+throttle.global_up.max_rate.set_kb = 10240
 
 # Maximum number of simultaneous downloads and uploads slots (global slots!) (max_downloads_global, max_uploads_global)
 throttle.max_downloads.global.set = 300
-throttle.max_uploads.global.set   = 300
+throttle.max_uploads.global.set   = 30
 
 # Maximum and minimum number of peers to connect to per torrent while downloading. Default: `100` and `200` respectively. (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (min_peers, max_peers)
-throttle.min_peers.normal.set = 99
-throttle.max_peers.normal.set = 100
+throttle.min_peers.normal.set = 100
+throttle.max_peers.normal.set = 200
 
 # Same as above but for seeding completed torrents (-1 = same as downloading) Default: `-1` for both. (seeds per torrent) (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (min_peers_seed, max_peers_seed)
 throttle.min_peers.seed.set = -1
@@ -53,7 +53,7 @@ throttle.max_peers.seed.set = -1
 
 # Maximum number of simultaneous downloads and uploads slots per torrent (`max_uploads`) Default: `50` (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (max_uploads)
 throttle.max_downloads.set = 50
-throttle.max_uploads.set = 50
+throttle.max_uploads.set = 5
 
 # Throttles rates for (groups of) downloads or IP ranges. (throttle_up) These throttles borrow bandwidth from the global throttle and thus are limited by it too.
 #   You can assign throttles to a stopped download with Ctrl-T. The NULL throttle is a special unlimited throttle that bypasses the global throttle.
