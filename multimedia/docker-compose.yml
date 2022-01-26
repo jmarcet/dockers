@@ -125,20 +125,20 @@ services:
     network_mode: host
     labels:
       org.label-schema.group: "monitored"
-    dns:
-      - 172.26.23.3
-      - 127.0.0.1
     volumes:
       - /etc/localtime:/etc/localtime
       - ./movistar_u7d:/app
       - ${RECORDINGS}:${RECORDINGS}
       - ${U7D_HOME}:/home
     environment:
+      # - DEBUG=1
       - IPTV_BW=${IPTV_BW}
+      - IPTV_IFACE=${IPTV_IFACE}
       - LAN_IP=${LAN_IP}
       # - MP4_OUTPUT=${MP4_OUTPUT}
       - RECORDINGS=${RECORDINGS}
       - U7D_UID=${U7D_UID}
+      # - VERBOSE_LOGS=${VERBOSE_LOGS}
     devices:
       - /dev/dri:/dev/dri
     cpu_shares: 8192
