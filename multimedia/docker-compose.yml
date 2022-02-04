@@ -42,8 +42,8 @@ services:
     ports:
       - '127.0.0.1:9091:3000'
     cpus: 2
-    mem_limit: 128mb
-    memswap_limit: 128mb
+    mem_limit: 512mb
+    memswap_limit: 512mb
     healthcheck:
       test: nc -zv 127.0.0.1 9091
       interval: 30s
