@@ -1,0 +1,22 @@
+version: '2.4'
+
+services:
+  comskip:
+    build: .
+    container_name: comskip
+    restart: on-failure
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=${PUID}
+      - LOG_COMSKIP=${LOG_COMSKIP}
+      - RECORDINGS=${RECORDINGS}
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ${RECORDINGS}:${RECORDINGS}
+    cpu_shares: 64
+    cpus: 3
+    mem_limit: 2gb
+    memswap_limit: 2gb
+
+# vim: et ci pi sts=2 sw=2 ts=2

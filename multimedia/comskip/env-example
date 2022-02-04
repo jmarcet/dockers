@@ -1,0 +1,3 @@
+PUID=nobody
+LOG_COMSKIP=/mnt/recordings/comskip-cleanup.log
+RECORDINGS=/mnt/recordings
