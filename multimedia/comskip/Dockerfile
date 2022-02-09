@@ -25,6 +25,7 @@ RUN \
 RUN \
     git clone git://github.com/erikkaashoek/Comskip /tmp/comskip && \
     cd /tmp/comskip && \
+    patch -p1 < /tmp/patches/comskip.patch && \
     ./autogen.sh && \
     ./configure --bindir=/usr/bin --sysconfdir=/config/comskip && \
     make -j 2 && \
