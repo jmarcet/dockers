@@ -131,6 +131,7 @@ services:
       - ${RECORDINGS}:${RECORDINGS}
       - ${U7D_HOME}:/home
     environment:
+      - COMSKIP=${COMSKIP}
       # - DEBUG=1
       - IPTV_BW=${IPTV_BW}
       - IPTV_IFACE=${IPTV_IFACE}
@@ -138,6 +139,7 @@ services:
       # - MP4_OUTPUT=${MP4_OUTPUT}
       # - RECORDING_THREADS=${RECORDING_THREADS}
       - RECORDINGS=${RECORDINGS}
+      - RECORDINGS_PER_CHANNEL=${RECORDINGS_PER_CHANNEL}
       - U7D_UID=${U7D_UID}
       # - VERBOSE_LOGS=${VERBOSE_LOGS}
     devices:
