@@ -14,3 +14,6 @@
 	path = multimedia/jellyfin
 	url = https://github.com/jellyfin/jellyfin
 	branch = release-10.7.z
+[submodule "gitlab/alpine-code-server"]
+	path = gitlab/alpine-code-server
+	url = git@github.com:jmarcet/alpine-code-server.git

@@ -55,17 +55,16 @@ services:
 
   code-server:
     container_name: code-server
-    # image: ghcr.io/linuxserver/code-server
-    build: ./code-server
+    build: ./alpine-code-server
     restart: ${RESTART_POLICY}
     mac_address: ${MAC_CODESERVER}
     labels:
       org.label-schema.group: "monitored"
     ports:
-      - '127.0.0.1:8095:8443'
+      - '127.0.0.1:8095:8080'
     environment:
-      - PUID=${CODESERVER_UID}
-      - PGID=${CODESERVER_GID}
+      - EUID=${CODESERVER_UID}
+      - EGID=${CODESERVER_GID}
       - PROXY_DOMAIN=${CODESERVER_DOMAIN}
     volumes:
       - /etc/localtime:/etc/localtime:ro
