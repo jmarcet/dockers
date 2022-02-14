@@ -1,0 +1,306 @@
+# ~/.rtorrent-config.rc and enable/modify the options as needed. Remember to uncomment the options you wish to enable. This config is included in the main config.
+
+
+##### begin: rtorrent-ps-ch_setup variables #####
+
+# Whether to use inotify for loading/removing torrent (meta) files from watch directories: [0|1]
+method.insert = cfg.inotify.use, value|const|private, 1
+
+# Whether to use the provided p2p blocklist with IPv4 Filter to stop connecting to unwanted peers: [0|1]
+method.insert = cfg.blocklist.use, value|private,  1
+
+# Whether to queue a magnet link download upon initial downloading (to be able to use Queue Manager) instead of start downloading it straight away: [0|1]
+method.insert = cfg.magnet_link.queue, value|private, 0
+
+# Whether to use external DNS cache instead of the built-in one of CURL: [0|1]
+method.insert = cfg.external_dnscache.use, value|private, 1
+
+# Set an interface with IPv4 address to bind to: [eth0|tun0]
+method.insert = cfg.interface.bind, string|const|private, (cat,"")
+
+# Set scrape intervals for active (~10 mins) and idle items (~12 hours)
+method.insert = cfg.scrape_interval.active, value,   580
+method.insert = cfg.scrape_interval.idle,   value, 43180
+
+##### end: rtorrent-ps-ch_setup variables #####
+
+
+
+##### begin: Default connection, performance settings #####
+
+# Global upload and download rate in KiB, `0` for unlimited (`download_rate`, `upload_rate`)
+# throttle.global_down.max_rate.set_kb = 24576
+# throttle.global_up.max_rate.set_kb = 24576
+# throttle.global_down.max_rate.set_kb = 40960
+# throttle.global_up.max_rate.set_kb = 40960
+throttle.global_down.max_rate.set_kb = 0
+throttle.global_up.max_rate.set_kb = 10240
+
+# Maximum number of simultaneous downloads and uploads slots (global slots!) (max_downloads_global, max_uploads_global)
+throttle.max_downloads.global.set = 300
+throttle.max_uploads.global.set   = 30
+
+# Maximum and minimum number of peers to connect to per torrent while downloading. Default: `100` and `200` respectively. (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (min_peers, max_peers)
+throttle.min_peers.normal.set = 100
+throttle.max_peers.normal.set = 200
+
+# Same as above but for seeding completed torrents (-1 = same as downloading) Default: `-1` for both. (seeds per torrent) (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (min_peers_seed, max_peers_seed)
+throttle.min_peers.seed.set = -1
+throttle.max_peers.seed.set = -1
+
+# Maximum number of simultaneous downloads and uploads slots per torrent (`max_uploads`) Default: `50` (Applies to Special group. Slowup group values will be overriden by per torrent settings in Favouring section of main config file). (max_uploads)
+throttle.max_downloads.set = 50
+throttle.max_uploads.set = 5
+
+# Throttles rates for (groups of) downloads or IP ranges. (throttle_up) These throttles borrow bandwidth from the global throttle and thus are limited by it too.
+#   You can assign throttles to a stopped download with Ctrl-T. The NULL throttle is a special unlimited throttle that bypasses the global throttle.
+#   Limits the upload rate to 600 kb/s for the "slowup" throttle group. We also use this property to distinguish between "special" and "others" group. (This value will be auto-adjusted by a helper script in Favouring section of main config file.)
+throttle.up = slowup,600
+throttle.up = tardyup,300
+
+# Slowup group values for the previous similar 3 settings that will be overriden by per torrent settings in Favouring section of main config file.
+#   cfg.slowup.d.peers_min ~ throttle.min_peers.normal , cfg.slowup.d.peers_max ~ throttle.max_peers.normal , cfg.slowup.d.uploads_max ~ throttle.max_uploads
+method.insert = cfg.slowup.d.peers_min,     value,    29
+method.insert = cfg.slowup.d.peers_max,     value,    50
+method.insert = cfg.slowup.d.uploads_max,   value,    15
+
+
+## Variables for getting upload rate limit for throttle groups and max number of upload/download slots for choke groups
+# Max, Min value of uprate limit throttle in KB and Max number of upload/download slots during leeching and seeding for slowup throttle group
+method.insert = cfg.slowup.uprate.max,      value,  1600
+method.insert = cfg.slowup.uprate.min,      value,    75
+method.insert = cfg.slowup.slots.leech.max, value,   200
+method.insert = cfg.slowup.slots.seed.max,  value,   125
+# Max, Min value of uprate limit throttle in KB and Max number of upload/download slots during leeching and seeding for tardyup throttle group
+method.insert = cfg.tardyup.uprate.max,     value,  1200
+method.insert = cfg.tardyup.uprate.min,     value,    25
+method.insert = cfg.tardyup.slots.leech.max,value,   150
+method.insert = cfg.tardyup.slots.seed.max, value,    75
+
+## Variables for getting global downrate limit
+# Max, Min value of global downrate in KB
+method.insert = cfg.global.downrate.max,    value,  9999
+method.insert = cfg.global.downrate.min,    value,  8000
+# Threshold values for global and special group uprate in KB
+method.insert = cfg.global.upall.threshold, value,  1600
+method.insert = cfg.global.upmain.threshold,value,  1100
+
+# Min value of uprate per upload slot (unchoked peers) in KB
+method.insert = cfg.global.slot.uprate.min, value,     5
+
+
+# Setting up choke groups that restricts the number of unchoked peers in a group
+# Modify default choke groups for specail group
+choke_group.up.heuristics.set = default_leech,upload_leech_experimental
+choke_group.tracker.mode.set  = default_leech,aggressive
+choke_group.tracker.mode.set  = default_seed,aggressive
+# Set up choke groups for slowup group
+choke_group.insert = slowup_leech
+choke_group.insert = slowup_seed
+choke_group.up.heuristics.set = slowup_leech,upload_leech
+choke_group.up.heuristics.set = slowup_seed,upload_seed
+choke_group.down.max.set = slowup_leech,(cat,(cfg.slowup.slots.leech.max))
+choke_group.up.max.set   = slowup_leech,(cat,(cfg.slowup.slots.leech.max))
+choke_group.up.max.set   = slowup_seed,(cat,(cfg.slowup.slots.seed.max))
+# Set up choke groups for tardyup group
+choke_group.insert = tardyup_leech
+choke_group.insert = tardyup_seed
+choke_group.up.heuristics.set = tardyup_leech,upload_leech
+choke_group.up.heuristics.set = tardyup_seed,upload_seed
+choke_group.down.max.set = tardyup_leech,(cat,(cfg.tardyup.slots.leech.max))
+choke_group.up.max.set   = tardyup_leech,(cat,(cfg.tardyup.slots.leech.max))
+choke_group.up.max.set   = tardyup_seed,(cat,(cfg.tardyup.slots.seed.max))
+
+
+# Set the numwant field sent to the tracker, which indicates how many peers we want. A negative value disables this feature. Default: -1 (tracker_numwant)
+trackers.numwant.set = 100
+
+# Set the max amount of memory space used to mapping file chunks. This refers to memory mapping, not physical memory allocation. Default: `1GB` (max_memory_usage) This may also be set using ulimit -m where 3/4 will be allocated to file chunks.
+pieces.memory.max.set = 4096M
+
+# Limit the number of connections rtorrent can accept/make (sockets)
+network.max_open_sockets.set = 999
+
+# Limit the number of open files rtorrent can keep open (you have to modify the system wide settings with ulimit!!!) (set_max_open_files)
+network.max_open_files.set = 999
+
+# Limit the number simultanous of HTTP request (used by announce or scrape requests) (default 32) (set_max_open_http)
+network.http.max_open.set = 99
+
+# Adjust the send and receive buffer size for socket. Disabled by default (0), this means the default is used by OS (you have to modify the system wide settings!!!) (send_buffer_size, receive_buffer_size)
+#   Increasing buffer sizes may help reduce disk seeking, connection polling as more data is buffered each time the socket is written to. It will result higher memory usage (not by rtorrent process!).
+# network.receive_buffer.size.set =  4M
+# network.send_buffer.size.set    = 12M
+
+# Preloading a piece of a file. (Default: 0) Possible values: 0 (Off) , 1 (Madvise) , 2 (Direct paging). (https://github.com/rakshasa/rtorrent/issues/418)
+pieces.preload.type.set = 2
+pieces.preload.min_size.set = 262144
+pieces.preload.min_rate.set = 5120
+
+# Change the TOS of peer connections, (Default: throughput) If the option is set to 'default' then the system default TOS is used. A hex value may be used for non-standard settings. Possible values: [default|lowdelay|throughput|reliability|mincost] or a hex value. (tos)
+#network.tos.set = throughput
+
+##### end: Default connection, performance settings #####
+
+
+
+##### begin: Directory settings #####
+
+# Defining directory constants
+method.insert = cfg.dir.main,       string|const|private, (cat,"/storage/downloads/")
+method.insert = cfg.dir.sub,        string|const|private, (cat,(cfg.dir.main),".rtorrent/")
+method.insert = cfg.dir.incomplete, string|const|private, (cat,(cfg.dir.sub),"incomplete/")
+method.insert = cfg.dir.meta_queue, string|const|private, (cat,(cfg.dir.sub),".queue/")
+method.insert = cfg.dir.meta_downl, string|const|private, (cat,(cfg.dir.sub),".downloading/")
+method.insert = cfg.dir.meta_compl, string|const|private, (cat,(cfg.dir.sub),".completed/")
+method.insert = cfg.dir.delqueue,   string|const|private, (cat,(cfg.dir.sub),".delqueue/")
+method.insert = cfg.dir.session,    string|const|private, (cat,(cfg.dir.sub),".session/")
+method.insert = cfg.dir.logs,       string|const|private, (cat,(cfg.dir.sub),".log/")
+
+# Default directory to save the downloaded torrents and where you should place your 'complete' data before you place your *.torrent file into the watch folder to be able to be hash checked. (directory)
+directory.default.set = (cat,(cfg.dir.incomplete))
+
+# Default session directory. Make sure you don't run multiple instance of rtorrent using the same session directory. (session)
+session.path.set = (cat,(cfg.dir.session))
+
+# Changing current working directory to incomplete dir
+system.cwd.set = (directory.default)
+
+# Watch directories for new torrents (meta files). Also specifying the final directories (data_dir and meta_dir) for them, whether it belongs to special group, whether its data is deletable (in this order) by setting:
+#   - normal priority for the special group ; - low priority and slowup throttle for the 2nd group (rest of the torrents) ; - unsafe_data custom field for those we want to delete their data upon removal
+#   'd.attribs.set' command receives 3 arguments: dirname,specialgroup,unsafe_data
+
+# Whatch dir definitions for loading metafiles using inotify
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),rotating/), load.start,  "d.attribs.set=rotating,1,1"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),fullseed/), load.start,  "d.attribs.set=fullseed,1,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),unsafe/),   load.start,  "d.attribs.set=unsafe,,1"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),various/),  load.start,  "d.attribs.set=various,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),apps/),     load.start,  "d.attribs.set=apps,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),cartoons/), load.start,  "d.attribs.set=cartoons,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),ebooks/),   load.start,  "d.attribs.set=ebooks,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),hdtv/),     load.start,  "d.attribs.set=hdtv,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),movies/),   load.start,  "d.attribs.set=movies,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),pictures/), load.start,  "d.attribs.set=pictures,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),songs/),    load.start,  "d.attribs.set=songs,,"))
+branch = ((cfg.inotify.use)), ((directory.watch.added, (cat,(cfg.dir.meta_downl),load/),     load.normal, "d.attribs.set=load,,"))
+
+# Fire up only once (after rtorrent is started) the normal scheluded load watch dirs as well even if inotify is used: load added metafiles when rtorrent has't been run
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_1,  85, 0, ((load.start, (cat,(cfg.dir.meta_downl),rotating/*.torrent), "d.attribs.set=rotating,1,1"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_2,  86, 0, ((load.start, (cat,(cfg.dir.meta_downl),fullseed/*.torrent), "d.attribs.set=fullseed,1,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_3,  87, 0, ((load.start, (cat,(cfg.dir.meta_downl),unsafe/*.torrent),   "d.attribs.set=unsafe,,1"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_4,  88, 0, ((load.start, (cat,(cfg.dir.meta_downl),various/*.torrent),  "d.attribs.set=various,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_5,  89, 0, ((load.start, (cat,(cfg.dir.meta_downl),apps/*.torrent),     "d.attribs.set=apps,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_6,  90, 0, ((load.start, (cat,(cfg.dir.meta_downl),cartoons/*.torrent), "d.attribs.set=cartoons,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_7,  91, 0, ((load.start, (cat,(cfg.dir.meta_downl),ebooks/*.torrent),   "d.attribs.set=ebooks,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_8,  91, 0, ((load.start, (cat,(cfg.dir.meta_downl),hdtv/*.torrent),     "d.attribs.set=hdtv,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_9,  93, 0, ((load.start, (cat,(cfg.dir.meta_downl),movies/*.torrent),   "d.attribs.set=movies,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_10, 93, 0, ((load.start, (cat,(cfg.dir.meta_downl),pictures/*.torrent), "d.attribs.set=pictures,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_11, 95, 0, ((load.start, (cat,(cfg.dir.meta_downl),songs/*.torrent),    "d.attribs.set=songs,,"))))
+branch = ((cfg.inotify.use)), ((schedule2, watch_dir_12, 96, 0, ((load.normal,(cat,(cfg.dir.meta_downl),load/*.torrent),     "d.attribs.set=load,,"))))
+
+# Whatch dir definitions for removing metafiles using inotify
+branch = ((cfg.inotify.use)), ((directory.watch.removed, d.erase, (cat,(cfg.dir.meta_compl),rotating/), (cat,(cfg.dir.meta_compl),fullseed/), (cat,(cfg.dir.meta_compl),unsafe/), (cat,(cfg.dir.meta_compl),various/), (cat,(cfg.dir.meta_compl),apps/), (cat,(cfg.dir.meta_compl),cartoons/), (cat,(cfg.dir.meta_compl),ebooks/), (cat,(cfg.dir.meta_compl),hdtv/), (cat,(cfg.dir.meta_compl),movies/), (cat,(cfg.dir.meta_compl),pictures/), (cat,(cfg.dir.meta_compl),songs/), (cat,(cfg.dir.meta_compl),load/)))
+
+# Whatch dir definitions for loading metafiles NOT using inotify
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_1,   5, 10, ((load.start, (cat,(cfg.dir.meta_downl),rotating/*.torrent), "d.attribs.set=rotating,1,1"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_2,   6, 10, ((load.start, (cat,(cfg.dir.meta_downl),fullseed/*.torrent), "d.attribs.set=fullseed,1,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_3,   7, 10, ((load.start, (cat,(cfg.dir.meta_downl),unsafe/*.torrent),   "d.attribs.set=unsafe,,1"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_4,   8, 10, ((load.start, (cat,(cfg.dir.meta_downl),various/*.torrent),  "d.attribs.set=various,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_5,   9, 10, ((load.start, (cat,(cfg.dir.meta_downl),apps/*.torrent),     "d.attribs.set=apps,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_6,  10, 10, ((load.start, (cat,(cfg.dir.meta_downl),cartoons/*.torrent), "d.attribs.set=cartoons,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_7,  11, 10, ((load.start, (cat,(cfg.dir.meta_downl),ebooks/*.torrent),   "d.attribs.set=ebooks,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_8,  12, 10, ((load.start, (cat,(cfg.dir.meta_downl),hdtv/*.torrent),     "d.attribs.set=hdtv,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_9,  13, 10, ((load.start, (cat,(cfg.dir.meta_downl),movies/*.torrent),   "d.attribs.set=movies,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_10, 14, 10, ((load.start, (cat,(cfg.dir.meta_downl),pictures/*.torrent), "d.attribs.set=pictures,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_11, 15, 10, ((load.start, (cat,(cfg.dir.meta_downl),songs/*.torrent),    "d.attribs.set=songs,,"))))
+branch = ((not, (cfg.inotify.use))), ((schedule2, watch_dir_12, 16, 10, ((load.normal,(cat,(cfg.dir.meta_downl),load/*.torrent),     "d.attribs.set=load,,"))))
+
+##### end: Directory settings #####
+
+
+
+##### begin: Other settings #####
+
+# Close torrents when diskspace is low. It's commented out since "system.file.allocate.set = 1" is used (with a non-blocking file system that supports fallocate, hence file allocation is instant) so it doesn't make any sense to use it.
+#schedule2 = low_diskspace, 120, 120, close_low_diskspace=1000M
+
+# Save all the session in every 12 hours instead of the default 20 minutes. This setup saves the session of a torrent a lot of time. (More info: https://github.com/rakshasa/rtorrent/issues/180#issuecomment-55140832)
+schedule2 = session_save, 1200, 43200, ((session.save))
+
+# The IP address the listening socket and outgoing connections is bound to. (bind)
+schedule2 = set_bind_address, 0, 0, "branch=((cfg.interface.bind)),((network.bind_address.set,(get_interface_ipv4_address,(cfg.interface.bind))))"
+
+# The IP address reported to the tracker. (ip) This handles dynamic IP's as well.
+schedule2 = ip_tick, 0, 1800, "network.local_address.set=marcet.info"
+
+# Port range to use for listening. (port_range)
+network.port_range.set = 6666-6666
+network.port_random.set = no
+
+# Set whether the client should try to connect to UDP trackers (It can cause various problems if it's enabled, if you experience any with this option enabled then disable it.)
+trackers.use_udp.set = 1
+
+# Enable DHT support for trackerless torrents or when all trackers are down. May be set to "disable" (completely disable DHT), "off" (do not start DHT),
+# "auto" (start and stop DHT as needed), or "on" (start DHT immediately). The default is "off". For DHT to work, a session directory must be defined.
+dht.mode.set = auto
+
+# UDP port to use for DHT
+dht.port.set = 6882
+
+# Adding public DHT servers for easy bootstrapping
+schedule2 = dht_node_1, 5, 0, "dht.add_node=router.utorrent.com:6881"
+schedule2 = dht_node_2, 5, 0, "dht.add_node=dht.transmissionbt.com:6881"
+schedule2 = dht_node_3, 5, 0, "dht.add_node=router.bitcomet.com:6881"
+schedule2 = dht_node_4, 5, 0, "dht.add_node=dht.aelitis.com:6881"
+
+# Enable/disable peer exchange for torrents that aren't marked private. Disabled by default. (peer_exchange)
+protocol.pex.set = yes
+
+# Check hash for finished torrents. (check_hash)
+pieces.hash.on_completion.set = yes
+
+# Adding support to SSL trackers and peers (http_capath)
+network.http.capath.set = /etc/ssl/certs
+
+# CURL options to add support for nonofficial SSL trackers and peers
+network.http.ssl_verify_host.set = 0
+network.http.ssl_verify_peer.set = 0
+
+# CURL option to disable built-in DNS cache if external DNS cache is used (default: 60)
+branch = ((cfg.external_dnscache.use)), ((network.http.dns_cache_timeout.set,0))
+
+# Encryption options (encryption), set to none (default) or any combination of the following: allow_incoming, try_outgoing, require, require_RC4, enable_retry, prefer_plaintext
+# This will only allow encrypted connections: protocol.encryption.set = require,require_RC4
+# The example value allows incoming encrypted connections, starts unencrypted outgoing connections but retries with encryption if they fail, preferring plaintext to RC4 encryption after the encrypted handshake
+protocol.encryption.set = allow_incoming,prefer_plaintext,enable_retry
+
+# SCGI socket and make it group writeable when rtorrent starts (otherwise apps can't connect to it since it was started by a normal user) (scgi_local)
+network.scgi.open_local = ~/.rtorrent.sock
+schedule2 = chmod_scgi_socket, 0, 0, "execute2=chmod,777,~/.rtorrent.sock"
+
+# Add a preferred filename encoding to the list. Encoding for non english chars (encoding_list)
+encoding.add = UTF-8
+
+# Max packet size using xmlrpc (Default: 524288) (xmlrpc_size_limit)
+network.xmlrpc.size_limit.set = 32M
+
+# Set the umask for this process, which is applied to all files created by the program.
+system.umask.set = 027
+
+# Whether to allocate disk space for a new torrent. Default: `0`
+system.file.allocate.set = 1
+
+# Loads unwanted peers from external text file into IPv4 Filter at startup, e.g.:
+#   - https://www.wael.name/wael.list.p2p.gz (https://www.wael.name/other/best-blocklist/)
+#   - https://silo.glasz.org/antip2p.list.gz (https://gist.github.com/glaszig/bf96beccf4694ae25d4f1f7cc6224985)
+branch = ((cfg.blocklist.use)), ((schedule2, load_ipv4_filter, 0, 0, "ipv4_filter.load=(cat,(session.path),wael.list.p2p),unwanted"))
+
+# Change key-bindings. Values: [qwerty|azerty|qwertz|dvorak] Default is 'qwerty'. (key_layout)
+#keys.layout.set = qwerty
+
+# Use a proxy for http and/or torrent traffic (http_proxy , proxy_address)
+#network.http.proxy_address.set = 127.0.0.1:8118
+#network.proxy_address.set = 127.0.0.1:8118
+
+##### end: Other settings #####
+

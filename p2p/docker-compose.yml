@@ -3,7 +3,7 @@ version: '2.4'
 services:
   rtorrent:
     hostname: rtorrent
-    build: ./rtorrent-ps-ch
+    build: ./alpine-rtorrent-ps-ch
     container_name: rtorrent
     cap_add:
       - NET_ADMIN
@@ -14,10 +14,8 @@ services:
     mac_address: ${MAC_RTORRENT}
     labels:
       org.label-schema.group: "monitored"
-    # command: tail -f /dev/null
     volumes:
       - /etc/localtime:/etc/localtime
-      - ./rtorrent-ps-ch:/app
       - /opt/rtorrent:/config
       - ${DOWNLOADS}:${DOWNLOADS}
     environment:
