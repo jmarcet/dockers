@@ -18,9 +18,7 @@ RUN \
     wget https://github.com/rakshasa/libtorrent/archive/v${LIBTORRENT_VER}.tar.gz && \
     tar xzf v${LIBTORRENT_VER}.tar.gz && \
     cd libtorrent-${LIBTORRENT_VER} && \
-    patch -p1 < /tmp/libtorrent-patches/lt-ps_all_02-better-bencode-errors_all.patch && \
-    patch -p1 < /tmp/libtorrent-patches/backport_lt_all_01-partially_done_and_choke_group_fix.patch && \
-    patch -p1 < /tmp/libtorrent-patches/backport_lt_all_02-honor_system_file_allocate_fix.patch && \
+    (for patch in /tmp/libtorrent-patches/*.patch; do patch -p1 < $patch; done) && \
     ./autogen.sh && \
     ./configure --prefix=/usr --disable-debug && \
     make -j4 && \
@@ -48,7 +46,6 @@ RUN \
 FROM python:3.10-alpine
 
 ENV HOME="/config"
-ENV PATH="/app:/config/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ENV TERM="screen-256color"
 
 RUN sed -e 's:alpine\/[.0-9v]\+\/:alpine/edge/:g' -i /etc/apk/repositories
@@ -60,5 +57,7 @@ COPY --from=buildstage /tmp/rtorrent-build/usr/ /usr/
 
 COPY ./rtorrent.sh /usr/local/bin/
 COPY ./config/.* /config/
+
+WORKDIR /config
 
 CMD /usr/local/bin/rtorrent.sh
