@@ -29,6 +29,11 @@ services:
     cpus: 2
     mem_limit: 1gb
     memswap_limit: 1gb
+    healthcheck:
+      test: nc -zv 127.0.0.1 6666
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 
 networks:
