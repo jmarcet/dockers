@@ -31,10 +31,7 @@ def main():
     log.basicConfig(
         datefmt="%Y-%m-%d %H:%M:%S",
         format="[%(asctime)s] [COMSKIP] [%(levelname)s] %(message)s",
-        handlers=[
-            log.FileHandler(os.path.join(RECORDINGS, "comskip.log")),
-            log.StreamHandler(sys.stdout)
-        ],
+        handlers=[log.FileHandler(os.path.join(RECORDINGS, "comskip.log")), log.StreamHandler(sys.stdout)],
         level=log.INFO,
     )
 
@@ -61,13 +58,15 @@ def main():
     files = [
         file
         for file in glob(f"{RECORDINGS}/**/*{VID_EXT}", recursive=True)
-        if not os.path.exists(os.path.splitext(file)[0] + ".edl") and (now - os.path.getmtime(file)) > 3600
+        if (
+            not os.path.exists(os.path.splitext(file)[0] + ".edl")
+            or os.path.getmtime(os.path.splitext(file)[0] + ".edl") < os.path.getmtime(file)
+        )
+        and (now - os.path.getmtime(file)) > 1200
     ]
     files.sort(key=os.path.getmtime, reverse=True)
 
-    signal.signal(signal.SIGHUP, handle_cleanup)
-    signal.signal(signal.SIGINT, handle_cleanup)
-    signal.signal(signal.SIGTERM, handle_cleanup)
+    [signal.signal(sig, handle_cleanup) for sig in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)]
 
     for recording in files:
         log.info(f'Processing "{recording}"')

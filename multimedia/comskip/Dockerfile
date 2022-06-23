@@ -38,13 +38,14 @@ ARG TARGETARCH
 
 RUN sed -e 's:alpine\/[.0-9v]\+\/:alpine/edge/:g' -i /etc/apk/repositories
 RUN apk update && apk upgrade --available --prune --purge
-RUN apk add bash curl ffmpeg git htop inotify-tools mkvtoolnix s6 sqlite-libs vim
-RUN pip install black ipython
+RUN apk add bash build-base curl ffmpeg git htop inotify-tools mkvtoolnix s6 sqlite-libs vim
+RUN pip install --upgrade pip && pip install bandit black flake8 pycodestyle ipython yt-dlp
+RUN apk del build-base
 RUN if [ "$TARGETARCH" = "amd64" ]; then apk add libva libva-intel-driver; fi
 
 COPY --from=buildstage /tmp/argtable-build/usr/lib/ /usr/lib/
 COPY --from=buildstage /tmp/comskip-build/usr/ /usr/
-COPY comskip.ini /etc/
+# COPY comskip.ini /etc/
 
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
@@ -52,8 +53,9 @@ ENV PYTHONUNBUFFERED=1
 RUN mkdir /app
 WORKDIR /app
 
-COPY comskip-recordings.py .
-COPY cleanuprecordings.sh .
-COPY start.sh .
+# COPY comskip-recordings.py .
+# COPY cleanuprecordings.sh .
+# COPY start.sh .
 
-ENTRYPOINT ["/app/start.sh"]
+# ENTRYPOINT ["/app/start.sh"]
+CMD tail -f /dev/null

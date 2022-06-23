@@ -1,28 +1,27 @@
 version: '2.4'
 
 services:
-  #comskip:
-  #  build: ./comskip
-  #  container_name: comskip
-  #  restart: ${RESTART_POLICY}
-  #  mac_address: ${MAC_COMSKIP}
+  # comskip:
+  #   build: ./comskip
+  #   container_name: comskip
+  #   restart: ${RESTART_POLICY}
+  #   mac_address: ${MAC_COMSKIP}
   #   labels:
-  #     org.label-schema.group: "monitored"
-  #  devices:
-  #    - /dev/dri:/dev/dri
-  #  environment:
-  #    - PUID=${PUID}
-  #    - PGID=${PGID}
-  #    - LOG_COMSKIP=${LOG_COMSKIP}
-  #    - RECORDINGS=${U7D_DIR}
-  #  volumes:
-  #    - /etc/localtime:/etc/localtime
-  #    - ./comskip:/app
-  #    - ${U7D_DIR}:${U7D_DIR}
-  #  cpu_shares: 64
-  #  cpus: 3
-  #  mem_limit: 2gb
-  #  memswap_limit: 2gb
+  #      org.label-schema.group: "monitored"
+  #   devices:
+  #     - /dev/dri:/dev/dri
+  #   environment:
+  #     - PUID
+  #     - LOG_COMSKIP
+  #     - RECORDINGS
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime
+  #     - ./comskip:/app
+  #     - ${RECORDINGS}:${RECORDINGS}
+  #   cpu_shares: 64
+  #   cpus: 3
+  #   mem_limit: 2gb
+  #   memswap_limit: 2gb
 
   flood:
     hostname: flood
