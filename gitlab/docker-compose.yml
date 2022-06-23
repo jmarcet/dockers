@@ -24,10 +24,10 @@ services:
       - /opt/gitlab-repos:/var/opt/gitlab-repos
       - /mnt/raid_crypt/@himawari/@gitlab:/mnt/raid_crypt/@himawari/@gitlab
     cpus: 3
-    mem_limit: 6gb
-    memswap_limit: 6gb
+    mem_limit: 8gb
+    memswap_limit: 8gb
     healthcheck:
-      test: curl --fail -s http://127.0.0.1/ && curl --fail -s http://127.0.0.1:5000/
+      test: curl --fail --silent http://127.0.0.1/ && curl --fail --silent http://127.0.0.1:5000/
       interval: 30s
       timeout: 5s
       retries: 3
@@ -52,6 +52,11 @@ services:
     cpus: 3
     mem_limit: 6gb
     memswap_limit: 6gb
+    healthcheck:
+      test: nc -zv 10.137.10.2 80
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   code-server:
     container_name: code-server
@@ -77,6 +82,11 @@ services:
     cpus: 3
     mem_limit: 6gb
     memswap_limit: 6gb
+    healthcheck:
+      test: curl --fail --silent http://127.0.0.1:8080/
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 
 networks:
