@@ -9,8 +9,8 @@ services:
     labels:
       org.label-schema.group: "monitored"
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - PUID
+      - PGID
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/urbackup:/var/urbackup

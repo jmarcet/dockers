@@ -19,8 +19,8 @@ services:
       - /opt/rtorrent:/config
       - ${DOWNLOADS}:${DOWNLOADS}
     environment:
-      - DOWNLOADS=${DOWNLOADS}
-      - RTORRENT_USER=${RTORRENT_USER}
+      - DOWNLOADS
+      - RTORRENT_USER
     ports:
       - '${DHT_PORT}:${DHT_PORT}/udp'
       - '${RTORRENT_PORT}:${RTORRENT_PORT}'
