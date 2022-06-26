@@ -53,7 +53,7 @@ services:
     mem_limit: 6gb
     memswap_limit: 6gb
     healthcheck:
-      test: nc -zv 10.137.10.2 80
+      test: netstat -nltap | grep -q 'ESTABLISHED ./gitlab-runner'
       interval: 30s
       timeout: 5s
       retries: 3
