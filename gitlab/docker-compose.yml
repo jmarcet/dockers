@@ -58,6 +58,22 @@ services:
       timeout: 5s
       retries: 3
 
+  blackd:
+    image: pyfound/black:latest_release
+    container_name: blackd
+    restart: ${RESTART_POLICY}
+    command: blackd --bind-host 0.0.0.0 --bind-port 80
+    mac_address: ${MAC_BLACKD}
+    labels:
+      org.label-schema.group: "monitored"
+    ports:
+      - '${LAN_IP}:8000:80'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    cpus: 1
+    mem_limit: 256mb
+    memswap_limit: 256mb
+
   code-server:
     container_name: code-server
     build: ./alpine-code-server
