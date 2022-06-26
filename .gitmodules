@@ -16,4 +16,4 @@
 	branch = release-10.7.z
 [submodule "gitlab/alpine-code-server"]
 	path = gitlab/alpine-code-server
-	url = git@github.com:jmarcet/alpine-code-server.git
+	url = ssh://git@gitlab.marcet.info:55055/javier/alpine-code-server.git
